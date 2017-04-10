@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  id="cordova-plugin-fusion-bodymap" version="0.1.0">
+  <name>FusionBodyMap</name>
+  <description>Fusionetic Plugin</description>
+  <license>MIT</license>
+
+  <engines>
+    <engine name="cordova" version=">=4.0.0" />
+  </engines>
+
+  <dependency id="cordova-plugin-compat" version="^1.1.0" />
+  <js-module src="www/FusionBodyMap.js" name="FusionBodyMap">
+    <clobbers target="fusionetics.bodyMap" />
+  </js-module>
+
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="FusionBodyMap">
+        <param name="ios-package" value="FusionPlugin" />
+      </feature>
+    </config-file>
+
+    <resource-file src="src/ios/ControllerCaptureOverlay.xib" />
+    <resource-file src="src/ios/ControllerCaptureReview.xib" />
+    <resource-file src="src/ios/ControllerImagePreview.xib" />
+    <resource-file src="src/ios/FusionPlugin.bundle" />
+
+    <header-file src="src/ios/CaptureFocus.h" />
+    <header-file src="src/ios/CaptureManager.h" />
+    <header-file src="src/ios/ControllerCaptureOverlay.h" />
+    <header-file src="src/ios/ControllerCaptureReview.h" />
+    <header-file src="src/ios/ControllerImagePreview.h" />
+    <header-file src="src/ios/FusionPlugin.h" />
+    <header-file src="src/ios/FusionResult.h" />
+
+    <source-file src="src/ios/CaptureFocus.m" />
+    <source-file src="src/ios/CaptureManager.m" />
+    <source-file src="src/ios/ControllerCaptureOverlay.m" />
+    <source-file src="src/ios/ControllerCaptureReview.m" />
+    <source-file src="src/ios/ControllerImagePreview.m" />
+    <source-file src="src/ios/FusionPlugin.m" />
+    <source-file src="src/ios/FusionResult.m" />
+
+    <framework src="AVFoundation.framework" />
+    <framework src="AVKit.framework" />
+    <framework src="CoreGraphics.framework" />
+    <framework src="CoreMedia.framework" />
+    <framework src="Foundation.framework" />
+    <framework src="MobileCoreServices.framework" />
+    <framework src="QuartzCore.framework" />
+
+    <preference name="CAMERA_USAGE_DESCRIPTION" default="" />
+    <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+      <string>$CAMERA_USAGE_DESCRIPTION</string>
+    </config-file>
+
+    <preference name="MICROPHONE_USAGE_DESCRIPTION" default="" />
+    <config-file target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+      <string>$MICROPHONE_USAGE_DESCRIPTION</string>
+    </config-file>
+  </platform>
+</plugin>
