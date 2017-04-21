@@ -48,7 +48,7 @@
     [self.device unlockForConfiguration];
   }
   
-  [self.session setSessionPreset:AVCaptureSessionPresetMedium];
+  [self.session setSessionPreset:AVCaptureSessionPresetHigh];
   // if ([self.session canSetSessionPreset:AVCaptureSessionPreset1280x720])
   //   [self.session setSessionPreset:AVCaptureSessionPreset1280x720];
   
