@@ -48,9 +48,9 @@
     [self.device unlockForConfiguration];
   }
   
-  [self.session setSessionPreset:AVCaptureSessionPresetHigh];
-  // if ([self.session canSetSessionPreset:AVCaptureSessionPreset1280x720])
-  //   [self.session setSessionPreset:AVCaptureSessionPreset1280x720];
+  [self.session setSessionPreset:AVCaptureSessionPresetMedium];
+  if ([self.session canSetSessionPreset:AVCaptureSessionPreset1280x720])
+    [self.session setSessionPreset:AVCaptureSessionPreset1280x720];
   
   movieOutput = [[AVCaptureMovieFileOutput alloc] init];
   if ([self.session canAddOutput:movieOutput]) {
