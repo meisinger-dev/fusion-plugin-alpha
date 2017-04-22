@@ -55,7 +55,7 @@
 
   for (AVCaptureConnection* connection in [videoOutput connections]) {
     for (AVCaptureInputPort* port in [connection inputPorts]) {
-      if ([[port mediaType] == AVMediaTypeVideo])
+      if ([[port mediaType] isEqual:AVMediaTypeVideo])
         [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
     }
   }
@@ -79,9 +79,6 @@
     }
   }
 
-  self.input = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:settings];
-  [self.input setExpectsMediaDataInRealTime:YES];
-
   NSDictionary* settings = @{
     AVVideoCodecKey : AVVideoCodecH264,
     AVVideoHeightKey : @1280,
@@ -92,6 +89,9 @@
       AVVideoProfileLevelKey : AVVideoProfileLevelH264Main31
     }
   };
+
+  self.input = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:settings];
+  [self.input setExpectsMediaDataInRealTime:YES];
 
   NSError* error;
   self.writer = [AVAssetWriter assetWriterWithURL:outputUrl fileType:AVFileTypeMPEG4 error:&error];
@@ -147,7 +147,7 @@
   }
 
   if ([self.writer status] == AVAssetWriterStatusWriting) {
-    if ([self.writer isReadyForMediaData]) {
+    if ([self.writer isReadyForMoreMediaData]) {
       if (![self.input appendSampleBuffer:sampleBuffer])
         NSLog(@"Unable to append sample buffer to input");
     }
