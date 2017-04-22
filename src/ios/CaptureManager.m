@@ -147,7 +147,7 @@
   }
 
   if ([self.writer status] == AVAssetWriterStatusWriting) {
-    if ([self.writer isReadyForMoreMediaData]) {
+    if ([self.input isReadyForMoreMediaData]) {
       if (![self.input appendSampleBuffer:sampleBuffer])
         NSLog(@"Unable to append sample buffer to input");
     }
