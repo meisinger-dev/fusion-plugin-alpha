@@ -81,10 +81,7 @@
   }
 }
 
--(void) captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections {
-}
-
--(void) captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
+-(void) captureOutput:(NSURL *)outputFileURL error:(NSError *)error {
   if (error.code != noErr) {
     NSLog(@"Errors -> %@", [error localizedDescription]);
     // add alert with proper message

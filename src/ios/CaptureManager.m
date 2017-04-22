@@ -3,11 +3,13 @@
 #import "CaptureManager.h"
 
 @implementation CaptureManager
+@synthesize writer;
+@synthesize input;
 @synthesize device;
 @synthesize session;
 @synthesize preview;
 
--(id) initWithDelegate:(id<AVCaptureFileOutputRecordingDelegate>)delegate{
+-(id) initWithDelegate:(id<CaptureOutputDelegate>)delegate{
   if ((self = [super init])) {
     [self setSession:[[AVCaptureSession alloc] init]];
     [self setDelegate:delegate];
@@ -38,23 +40,24 @@
     // add alert with proper message
   }
     
-  if ([self.device lockForConfiguration:nil]) {
-    if ([self.device hasFlash] && [self.device isFlashModeSupported:AVCaptureFlashModeAuto]) {
-      [self.device setFlashMode:AVCaptureFlashModeAuto];
-    }
-    if ([self.device hasTorch] && [self.device isTorchModeSupported:AVCaptureTorchModeAuto]) {
-      [self.device setTorchMode:AVCaptureTorchModeAuto];
-    }
-    [self.device unlockForConfiguration];
-  }
-  
   [self.session setSessionPreset:AVCaptureSessionPresetMedium];
   if ([self.session canSetSessionPreset:AVCaptureSessionPreset1280x720])
     [self.session setSessionPreset:AVCaptureSessionPreset1280x720];
   
-  movieOutput = [[AVCaptureMovieFileOutput alloc] init];
-  if ([self.session canAddOutput:movieOutput]) {
-    [self.session addOutput:movieOutput];
+  queue = dispatch_queue_create(@"fusion-plugin-recording", DISPATCH_QUEUE_SERIAL);
+
+  videoOutput = [[AVCaptureVideoDataOutput alloc] init];
+  [videoOutput setAlwaysDiscardsLateVideoFrames:YES];
+  [videoOutput setSampleBufferDelegate:self queue:queue];
+
+  if ([self.session canAddOutput:videoOutput])
+    [self.session addOutput:videoOutput];
+
+  for (AVCaptureConnection* connection in [videoOutput connections]) {
+    for (AVCaptureInputPort* port in [connection inputPorts]) {
+      if ([[port mediaType] == AVMediaTypeVideo])
+        [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
+    }
   }
 }
 
@@ -64,15 +67,8 @@
 }
 
 -(void) captureStart {
-  if (!movieOutput) {
-    movieOutput = [[AVCaptureMovieFileOutput alloc] init];
-    if ([self.session canAddOutput:movieOutput]) {
-      [self.session addOutput:movieOutput];
-    }
-  }
-      
-  NSString* outputPath = [[NSString alloc] initWithFormat:@"%@%@%@", NSTemporaryDirectory(), [[NSUUID UUID] UUIDString], @".mov"];
-  NSURL* outputUrl = [[NSURL alloc] initFileURLWithPath:outputPath];
+  NSString* outputPath = [[NSString alloc] initWithFormat:@"%@%@%@", NSTemporaryDirectory(), [[NSUUID UUID] UUIDString], @".mp4"];
+  outputUrl = [[NSURL alloc] initFileURLWithPath:outputPath];
   
   NSFileManager* fileManager = [NSFileManager defaultManager];
   if ([fileManager fileExistsAtPath:outputPath]) {
@@ -83,12 +79,82 @@
     }
   }
 
-  [movieOutput startRecordingToOutputFileURL:outputUrl recordingDelegate:[self delegate]];
+  self.input = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:settings];
+  [self.input setExpectsMediaDataInRealTime:YES];
+
+  NSDictionary* settings = @{
+    AVVideoCodecKey : AVVideoCodecH264,
+    AVVideoHeightKey : @1280,
+    AVVideoWidthKey : @720,
+    AVVideoCompressionPropertiesKey : @{
+      AVVideoAverageBitRateKey : @7600000,
+      AVVideoMaxKeyFrameIntervalKey : @30,
+      AVVideoProfileLevelKey : AVVideoProfileLevelH264Main31
+    }
+  };
+
+  NSError* error;
+  self.writer = [AVAssetWriter assetWriterWithURL:outputUrl fileType:AVFileTypeMPEG4 error:&error];
+  if (error.code != noErr) {
+    NSLog(@"Unable to create asset writer");
+    // add alert with proper message
+    return;
+  }
+
+  if ([self.writer canAddInput:self.input])
+    [self.writer addInput:self.input];
+  else {
+    NSLog(@"Unable to add input to asset writer");
+    // add alert with proper message
+  }
 }
 
 -(void) captureStop {
-  if ([movieOutput isRecording])
-    [movieOutput stopRecording];
+  dispatch_async(queue, ^{
+    [self.input markAsFinished];
+    [self.writer finishWritingWithCompletionHandler:^{
+      if ([self.writer status] == AVAssetWriterStatusFailed) {
+        [self.delegate captureOutput:outputUrl error:[self.writer error]];
+      }
+
+      if ([self.writer status] == AVAssetWriterStatusCompleted) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [self.delegate captureOutput:outputUrl error:nil];
+        });
+      }
+    }];
+  });
+}
+
+-(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+  CFRetain(sampleBuffer);
+  dispatch_async(queue, ^{
+    if (self.writer) {
+      if (captureOutput == videoOutput) {
+        [self captureFromBuffer:sampleBuffer];
+      }
+    }
+    CFRelease(sampleBuffer);
+  });
+}
+
+-(void) captureFromBuffer:(CMSampleBufferRef)sampleBuffer {
+  CMTime timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+
+  if ([self.writer status] == AVAssetWriterStatusUnknown) {
+    if ([self.writer startWriting])
+      [self.writer startSessionAtSourceTime:timestamp];
+  }
+
+  if ([self.writer status] == AVAssetWriterStatusWriting) {
+    if ([self.writer isReadyForMediaData]) {
+      if (![self.input appendSampleBuffer:sampleBuffer])
+        NSLog(@"Unable to append sample buffer to input");
+    }
+  }
+
+  if ([self.writer status] == AVAssetWriterStatusFailed)
+    NSLog(@"Asset writer failed");
 }
 
 -(void) focus:(CGPoint)point {
@@ -107,15 +173,16 @@
 }
 
 -(void) tearDown {
-  if ([movieOutput isRecording])
-    [movieOutput stopRecording];
+  [self.writer cancelWriting];
   
   if ([self.session isRunning])
     [self.session stopRunning];
   
+  input = nil;
+  writer = nil;
   preview = nil;
   session = nil;
-  movieOutput = nil;
+  videoOutput = nil;
 }
 
 @end

@@ -3,7 +3,7 @@
 #import "CaptureManager.h"
 
 @class FusionPlugin;
-@interface ControllerCaptureOverlay : UIViewController <UINavigationControllerDelegate, AVCaptureFileOutputRecordingDelegate> {}
+@interface ControllerCaptureOverlay : UIViewController <UINavigationControllerDelegate, CaptureOutputDelegate> {}
 
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton* captureButton;
