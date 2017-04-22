@@ -44,7 +44,7 @@
   if ([self.session canSetSessionPreset:AVCaptureSessionPreset1280x720])
     [self.session setSessionPreset:AVCaptureSessionPreset1280x720];
   
-  queue = dispatch_queue_create(@"fusion-plugin-recording", DISPATCH_QUEUE_SERIAL);
+  queue = dispatch_queue_create("fusion-plugin-recording", DISPATCH_QUEUE_SERIAL);
 
   videoOutput = [[AVCaptureVideoDataOutput alloc] init];
   [videoOutput setAlwaysDiscardsLateVideoFrames:YES];
