@@ -2,7 +2,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
 
-@protocol CaptureOutputDelegate <NSObject> {
+@protocol CaptureOutputDelegate <NSObject>
 
 -(void) captureOutput:(NSURL *)outputFileURL error:(NSError *)error;
 
