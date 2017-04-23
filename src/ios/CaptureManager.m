@@ -81,8 +81,8 @@
 
   NSDictionary* settings = @{
     AVVideoCodecKey : AVVideoCodecH264,
-    AVVideoHeightKey : @1280,
-    AVVideoWidthKey : @720,
+    AVVideoHeightKey : @960,
+    AVVideoWidthKey : @540,
     AVVideoCompressionPropertiesKey : @{
       AVVideoAverageBitRateKey : @4600000,
       AVVideoMaxKeyFrameIntervalKey : @24,
