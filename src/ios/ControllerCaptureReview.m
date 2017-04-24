@@ -84,7 +84,7 @@
   
   review.view.frame = frame;
   [UIView animateWithDuration:0.25f animations:^{review.view.frame = self.view.bounds;} completion:^(BOOL finished) {
-    CGImageRelease(imageRef)
+    CGImageRelease(imageRef);
   }];
 }
 
