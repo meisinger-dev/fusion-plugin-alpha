@@ -84,7 +84,7 @@
     AVVideoHeightKey : @960,
     AVVideoWidthKey : @540,
     AVVideoCompressionPropertiesKey : @{
-      AVVideoAverageBitRateKey : @3400000,
+      AVVideoAverageBitRateKey : @2600000,
       AVVideoMaxKeyFrameIntervalKey : @24,
       AVVideoProfileLevelKey : AVVideoProfileLevelH264Main31
     }
