@@ -44,6 +44,7 @@
   
   AVAssetImageGenerator* generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
   [generator setAppliesPreferredTrackTransform:YES];
+  [generator setMaximumSize:CGSizeMake(360, 640)];
   generator.requestedTimeToleranceBefore = kCMTimeZero;
   generator.requestedTimeToleranceAfter = kCMTimeZero;
   
@@ -82,7 +83,9 @@
   frame.size.height = self.view.frame.size.height;
   
   review.view.frame = frame;
-  [UIView animateWithDuration:0.25f animations:^{review.view.frame = self.view.bounds;}];
+  [UIView animateWithDuration:0.25f animations:^{review.view.frame = self.view.bounds;} completion:^(BOOL finished) {
+    CGImageRelease(imageRef)
+  }];
 }
 
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent *)event {
