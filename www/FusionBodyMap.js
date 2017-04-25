@@ -11,6 +11,7 @@ FusioneticsPlugin.prototype.captureVideo = function (cbSuccess, cbError, options
 
     var data = json.data;
     cbSuccess({
+      cancelled: data.cancelled,
       capturedVideo: data.capturedVideo,
       capturedImage: data.capturedImage,
       videoUrl: data.videoUrl,
