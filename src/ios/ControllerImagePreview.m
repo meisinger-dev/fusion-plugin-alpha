@@ -6,13 +6,13 @@
 @implementation ControllerImagePreview
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    return self;
+  self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+  return self;
 }
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent *)event {
-    ControllerCaptureReview* parent = (ControllerCaptureReview *)self.parentViewController;
-    [parent retakePicture:self];
+  ControllerCaptureReview* parent = (ControllerCaptureReview *)self.parentViewController;
+  [parent retakePicture:self];
 }
 
 -(IBAction) savePicture:(id)sender forEvent:(UIEvent *)event {
@@ -39,7 +39,7 @@
   [super viewWillAppear:animated];
   
   dispatch_async(dispatch_get_main_queue(), ^{
-      [self.imageView addSubview:movieImageView];
+    [self.imageView addSubview:movieImageView];
   });
 }
 
@@ -52,10 +52,6 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
-}
-
--(void) didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
 }
 
 @end

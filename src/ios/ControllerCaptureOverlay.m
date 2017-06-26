@@ -9,14 +9,14 @@
 
 @implementation ControllerCaptureOverlay {
     CaptureFocus* focusSquare;
+    UIAlertController* alertController;
+    UITapGestureRecognizer* tapRecognizer;
 }
 
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self) {
     self.manager = [[CaptureManager alloc] initWithDelegate:self];
-    [self.manager addInput];
-    [self.manager addPreviewLayer];
   }
   return self;
 }
@@ -32,7 +32,20 @@
     AudioServicesPlaySystemSound(1114);
   } else {
     [self.overlayImage setHidden:YES];
-    [self.manager captureStart];
+
+    NSError* error;
+    [self.manager captureStart:&error];
+
+    if (error.code != noErr) {
+      alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Video" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+      [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+        [self.plugin failed:[error localizedDescription]];
+      }]];
+
+      [self presentViewController:alertController animated:YES completion:nil];
+      return;
+    }
+
     AudioServicesPlaySystemSound(1113);
   }
   
@@ -57,16 +70,27 @@
     if ([fileManager fileExistsAtPath:[movieUrl path]]) {
       NSError* error;
       if ([fileManager removeItemAtPath:[movieUrl path] error:&error] != YES) {
-        NSLog(@"Unable to delete file: %@", [error localizedDescription]);
-        // add alert with proper message
+        alertController = [UIAlertController alertControllerWithTitle:@"Unable to Delete Video" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+          [self.plugin failed:[error localizedDescription]];
+        }]];
+
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
       }
     }
     
     [child willMoveToParentViewController:nil];
     [child.view removeFromSuperview];
     [child removeFromParentViewController];
+
     [[self captureButton] setUserInteractionEnabled:YES];
     [[self overlayImage] setHidden:NO];
+
+    tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusTap:)];
+    tapRecognizer.numberOfTapsRequired = 1;
+    tapRecognizer.numberOfTouchesRequired = 1;
+    [self.view addGestureRecognizer:tapRecognizer];
   }];
 }
 
@@ -83,8 +107,12 @@
 
 -(void) captureOutput:(NSURL *)outputFileURL error:(NSError *)error {
   if (error.code != noErr) {
-    NSLog(@"Errors -> %@", [error localizedDescription]);
-    // add alert with proper message
+    alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Video" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+      [self.plugin failed:[error localizedDescription]];
+    }]];
+
+    [self presentViewController:alert animated:YES completion:nil];
     return;
   }
 
@@ -116,6 +144,9 @@
   player.plugin = self.plugin;
   player.movieUrl = outputFileUrl;
   
+  [self.view removeGestureRecognizer:tapRecognizer];
+  tapRecognizer = nil;
+
   [self addChildViewController:player];
   [self.view addSubview:player.view];
   [player didMoveToParentViewController:self];
@@ -132,9 +163,21 @@
 
 -(void) viewDidLoad {
   [super viewDidLoad];
+
+  NSError* error;
+  [self.manager captureSetup:&error];
+
+  if (error.code != noErr) {
+    alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Video" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+      [self.plugin failed:[error localizedDescription]];
+    }]];
+    return;
+  }
   
   CGRect screenFrame = [[UIScreen mainScreen] bounds];
   self.view.frame = screenFrame;
+
   [[self.manager preview] setBounds:screenFrame];
   [[self.manager session] startRunning];
   [[self.manager device] addObserver:self forKeyPath:@"adjustingFocus" options:NSKeyValueObservingOptionNew context:nil];
@@ -142,7 +185,12 @@
 
 -(void) viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-    
+  
+  if (alertController) {
+    [self presentViewController:alertController animated:YES completion:nil];
+    return;
+  }
+
   SEL selector = NSSelectorFromString(@"setNeedsStatusBarAppearanceUpdate");
   if ([self respondsToSelector:selector]) {
     [self performSelector:selector withObject:nil afterDelay:0];
@@ -158,7 +206,7 @@
     [self.view sendSubviewToBack:cameraView];
     [[cameraView layer] addSublayer:self.manager.preview];
     
-    UITapGestureRecognizer* tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusTap:)];
+    tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusTap:)];
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.numberOfTouchesRequired = 1;
     [self.view addGestureRecognizer:tapRecognizer];
@@ -167,12 +215,22 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
   [[self.manager device] removeObserver:self forKeyPath:@"adjustingFocus"];
-  [self.manager tearDown];
+  [self.manager captureTearDown];
+  alertController = nil;
+
+  [self.view removeGestureRecognizer:tapRecognizer];
+  tapRecognizer = nil;
 
   [super viewWillDisappear:animated];
 }
 
 -(void) didReceiveMemoryWarning {
+  alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Video" message:@"In appears you are running low on memory. Try closing a few applications. Make sure you have enough space to record a movie or video." preferredStyle:UIAlertControllerStyleAlert];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handle:^(UIAlertAction* action) {
+    [self.plugin failed:@"Low memory warning"];
+  }]];
+
+  [self presentViewController:alertController animated:YES completion:nil];
   [super didReceiveMemoryWarning];
 }
 

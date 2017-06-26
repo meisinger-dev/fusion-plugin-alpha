@@ -15,6 +15,7 @@
 -(void) takeVideo:(CDVInvokedUrlCommand*)command;
 -(void) playVideo:(CDVInvokedUrlCommand*)command;
 -(void) cancelled;
+-(void) failed:(NSString*)message;
 -(void) captured:(FusionResult*)result;
 
 @end

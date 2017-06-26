@@ -23,11 +23,10 @@
 @property (strong, nonatomic) id<CaptureOutputDelegate> delegate;
 
 -(id) initWithDelegate:(id<CaptureOutputDelegate>) delegate;
--(void) addInput;
--(void) addPreviewLayer;
--(void) captureStart;
+-(void) captureSetup:(NSError **)setupError;
+-(void) captureStart:(NSError **)startError;
 -(void) captureStop;
+-(void) captureTearDown;
 -(void) focus:(CGPoint)point;
--(void) tearDown;
 
 @end

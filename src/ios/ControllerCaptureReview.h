@@ -6,7 +6,7 @@
 
 @class FusionPlugin;
 @interface ControllerCaptureReview : UIViewController {
-    id seekbarObserver;
+  id seekbarObserver;
 }
 
 @property (weak, nonatomic) IBOutlet UIView* playerView;

@@ -3,7 +3,9 @@
 #import "ControllerCaptureReview.h"
 #import "ControllerImagePreview.h"
 
-@implementation ControllerCaptureReview
+@implementation ControllerCaptureReview {
+  UIAlertController* alertController;
+}
 
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -33,8 +35,8 @@
 }
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent *)event {
-    ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
-    [parent retakeVideo:self forMovie:self.movieUrl];
+  ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
+  [parent retakeVideo:self forMovie:self.movieUrl];
 }
 
 -(IBAction) takePicture:(id)sender forEvent:(UIEvent *)event {
@@ -53,10 +55,12 @@
   CGImageRef imageRef = [generator copyCGImageAtTime:currentTime actualTime:&actualTime error:&error];
   
   if ((error.code != noErr)) {
-    NSLog(@"Unable to capture image");
-    NSLog(@"Error -> %@", [error localizedDescription]);
-    NSLog(@"Reason -> %@", [error localizedFailureReason]);
-    // add alert with proper message
+    alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Image" message:[error localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+      [self.plugin failed:[error localizedDescription]];
+    }]];
+
+    [self presentViewController:alertController animated:YES completion:nil];
     return;
   }
   
@@ -137,10 +141,6 @@
   }];
 }
 
--(void) orientationDidChange:(NSNotification *)notification {
-    NSLog(@"Orientation has changed.");
-}
-
 -(void) playerReachedEnd:(NSNotification *)notification {
   AVPlayerItem* item = [notification object];
   [item seekToTime:kCMTimeZero];
@@ -184,7 +184,6 @@
   
   self.moviePlayer = [[AVPlayerViewController alloc] init];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerReachedEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:[player currentItem]];
   [player addObserver:self forKeyPath:@"status" options:0 context:nil];
   
@@ -216,14 +215,10 @@
   AVPlayer* player = self.moviePlayer.player;
   [player removeTimeObserver:seekbarObserver];
   [player removeObserver:self forKeyPath:@"status"];
-    
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+  alertController = nil;
+  
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
   [super viewWillDisappear:animated];
-}
-
--(void) didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
 }
 
 @end

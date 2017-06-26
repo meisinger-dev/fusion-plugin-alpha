@@ -6,7 +6,7 @@
 
 @class FusionPlugin;
 @interface ControllerImagePreview : UIViewController {
-    UIImageView* movieImageView;
+  UIImageView* movieImageView;
 }
 
 @property (weak, nonatomic) IBOutlet UIView* imageView;

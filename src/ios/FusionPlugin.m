@@ -9,7 +9,6 @@
   hasPendingOperation = YES;
   self.command = command;
 
-  //NSBundle* bundle = [NSBundle bundleWithPath: [[NSBundle mainBundle] pathForResource:NSStringFromClass([self class]) ofType:@"bundle"]];
   self.overlay = [[ControllerCaptureOverlay alloc] initWithNibName:@"ControllerCaptureOverlay" bundle:nil];
   self.overlay.plugin = self;
 
@@ -20,7 +19,6 @@
   hasPendingOperation = YES;
   self.command = command;
 
-  //NSBundle* bundle = [NSBundle bundleWithPath: [[NSBundle mainBundle] pathForResource:NSStringFromClass([self class]) ofType:@"bundle"]];
   self.preview = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerCaptureReview" bundle:nil];
   self.preview.plugin = self;
   self.preview.movieUrl = [command.arguments objectAtIndex:0];
@@ -33,6 +31,15 @@
   [result setCancelled:YES];
 
   [self captured:result];
+}
+
+-(void) failed:(NSString *)message {
+  [self.commandDelegate sendPluginResult:[CDVPluginResult 
+    resultWithStatus:CDVCommandStatus_ERROR
+    messageAsString:message] callbackId:self.command.callbackId];
+
+  hasPendingOperation = NO;
+  [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void) captured:(FusionResult *)result {
