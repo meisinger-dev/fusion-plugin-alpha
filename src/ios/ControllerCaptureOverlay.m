@@ -112,7 +112,7 @@
       [self.plugin failed:[error localizedDescription]];
     }]];
 
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alertController animated:YES completion:nil];
     return;
   }
 
@@ -226,7 +226,7 @@
 
 -(void) didReceiveMemoryWarning {
   alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Video" message:@"In appears you are running low on memory. Try closing a few applications. Make sure you have enough space to record a movie or video." preferredStyle:UIAlertControllerStyleAlert];
-  [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handle:^(UIAlertAction* action) {
+  [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
     [self.plugin failed:@"Low memory warning"];
   }]];
 
