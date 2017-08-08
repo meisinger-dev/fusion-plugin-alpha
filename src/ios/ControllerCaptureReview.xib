@@ -32,7 +32,7 @@
                             <rect key="frame" x="175" y="29" width="65" height="65"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <state key="normal" backgroundImage="FusionPlugin.bundle/btn-play.png"/>
-                            <state key="selected" backgroundImage="FusionPlugin.bundle/pause_button.png"/>
+                            <state key="selected" backgroundImage="FusionPlugin.bundle/btn-pause.png"/>
                             <connections>
                                 <action selector="togglePlayback:forEvent:" destination="-1" eventType="touchUpInside" id="jCT-u9-4Jx"/>
                             </connections>
