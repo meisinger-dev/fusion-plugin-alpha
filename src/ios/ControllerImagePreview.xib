@@ -47,7 +47,7 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.31294659050000001" green="0.32199735839999999" blue="0.34471613600000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FvC-zh-VwV">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="615"/>
