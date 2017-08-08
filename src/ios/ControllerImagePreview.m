@@ -11,6 +11,10 @@
 }
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent *)event {
+  [self.plugin cancelled];
+}
+
+-(IBAction) retakePicture:(id)sender forEvent:(UIEvent *)event {
   ControllerCaptureReview* parent = (ControllerCaptureReview *)self.parentViewController;
   [parent retakePicture:self];
 }

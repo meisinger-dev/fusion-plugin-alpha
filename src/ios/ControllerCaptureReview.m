@@ -35,6 +35,10 @@
 }
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent *)event {
+  [self.plugin cancelled];
+}
+
+-(IBAction) retakeVideo:(id)sender forEvent:(UIEvent *)event {
   ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
   [parent retakeVideo:self forMovie:self.movieUrl];
 }

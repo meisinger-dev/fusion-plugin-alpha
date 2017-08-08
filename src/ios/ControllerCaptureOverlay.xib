@@ -59,7 +59,7 @@
     <resources>
         <image name="btn-back" width="128" height="128"/>
         <image name="btn-record" width="128" height="128"/>
+        <image name="btn-stop" width="128" height="128"/>
         <image name="vid-guidelines" width="415" height="615"/>
-        <image name="stop_button_pressed" width="128" height="128"/>
     </resources>
 </document>

@@ -11,6 +11,7 @@
 
 @property (weak, nonatomic) IBOutlet UIView* imageView;
 @property (weak, nonatomic) IBOutlet UIButton* saveButton;
+@property (weak, nonatomic) IBOutlet UIButton* retakeButton;
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
 @property (strong, nonatomic) NSURL* movieUrl;
 @property (strong, nonatomic) UIImage* movieImage;
@@ -18,6 +19,7 @@
 @property (strong, nonatomic) FusionPlugin* plugin;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
+-(IBAction) retakePicture:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) savePicture:(id)sender forEvent:(UIEvent*)event;
 
 @end
