@@ -30,7 +30,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dts-ye-hy3">
-                            <rect key="frame" x="175" y="29" width="65" height="65"/>
+                            <rect key="frame" x="161" y="17" width="92" height="92"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <state key="normal" backgroundImage="FusionPlugin.bundle/btn-play.png"/>
                             <state key="selected" backgroundImage="FusionPlugin.bundle/btn-pause.png"/>
@@ -52,8 +52,8 @@
                             <rect key="frame" x="38" y="29" width="58" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" image="FusionPlugin.bundle/btn-save.png"/>
-                            <state key="highlighted" image="FusionPlugin.bundle/btn-save-touch.png"/>
+                            <state key="normal" image="FusionPlugin.bundle/btn-capture.png"/>
+                            <state key="highlighted" image="FusionPlugin.bundle/btn-capture-touch.png"/>
                             <connections>
                                 <action selector="takePicture:forEvent:" destination="-1" eventType="touchUpInside" id="OHK-nA-NYE"/>
                             </connections>
@@ -91,8 +91,8 @@
     </objects>
     <resources>
         <image name="btn-back" width="128" height="128"/>
-        <image name="btn-save" width="58" height="77"/>
-        <image name="btn-save-touch" width="58" height="77"/>
+        <image name="btn-capture" width="58" height="77"/>
+        <image name="btn-capture-touch" width="58" height="77"/>
         <image name="btn-retake" width="61" height="77"/>
         <image name="btn-retake-touch" width="61" height="77"/>
         <image name="btn-play" width="74" height="74"/>

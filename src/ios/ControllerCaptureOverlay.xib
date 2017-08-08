@@ -27,7 +27,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4K1-Uo-rlf">
-                            <rect key="frame" x="179" y="29" width="65" height="65"/>
+                            <rect key="frame" x="164" y="17" width="92" height="92"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <state key="normal" backgroundImage="FusionPlugin.bundle/btn-record.png" />
                             <state key="selected" backgroundImage="FusionPlugin.bundle/btn-stop.png"/>
