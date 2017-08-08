@@ -38,7 +38,7 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" white="0.33333333333333331" alpha="0.35222739361702127" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="FusionPlugin.bundle/vid-guidelines.png" translatesAutoresizingMaskIntoConstraints="NO" id="hR4-T1-i2L">
                     <rect key="frame" x="0.0" y="20.0" width="415" height="567"/>
