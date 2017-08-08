@@ -27,19 +27,21 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VlP-lt-cgl">
-                            <rect key="frame" x="309" y="29" width="65" height="65"/>
+                            <rect key="frame" x="318" y="29" width="58" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" title="Cancel" backgroundImage="FusionPlugin.bundle/blue_button.png"/>
+                            <state key="normal" image="FusionPlugin.bundle/btn-retake.png"/>
+                            <state key="highlighted" image="FusionPlugin.bundle/btn-retake-touch.png"/>
                             <connections>
                                 <action selector="cancel:forEvent:" destination="-1" eventType="touchUpInside" id="i1R-1v-HMQ"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jb3-pI-fe0">
-                            <rect key="frame" x="40" y="29" width="65" height="65"/>
+                            <rect key="frame" x="38" y="29" width="58" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" title="Save" backgroundImage="FusionPlugin.bundle/blue_button.png"/>
+                            <state key="normal" image="FusionPlugin.bundle/btn-save.png"/>
+                            <state key="highlighted" image="FusionPlugin.bundle/btn-save-touch.png"/>
                             <connections>
                                 <action selector="savePicture:forEvent:" destination="-1" eventType="touchUpInside" id="wmT-cb-TZ2"/>
                             </connections>
@@ -58,6 +60,7 @@
         </view>
     </objects>
     <resources>
-        <image name="blue_button" width="128" height="128"/>
+        <image name="btn-retake" width="58" height="77"/>
+        <image name="btn-save" width="58" height="77"/>
     </resources>
 </document>
