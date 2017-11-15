@@ -197,7 +197,16 @@
   }
     
   dispatch_async(dispatch_get_main_queue(), ^{
-    CGRect layer = [[self.view layer] bounds];
+    CGSize screen = [[UIScreen mainScreen] bounds].size;
+
+    float containerHeight = 0;
+    UIView* container = self.captureButton.superview;
+    if (container) {
+      CGSize containerSize = [[container layer] bounds].size;
+      containerHeight = containerSize.height * 1.0f;
+    }
+
+    CGRect layer = CGRectMake(0, 0, screen.width, (screen.height - containerHeight));
     [[self.manager preview] setBounds:layer];
     [[self.manager preview] setPosition:CGPointMake(CGRectGetMidX(layer), CGRectGetMidY(layer))];
     

@@ -30,7 +30,7 @@
 
   [self initializeVideoOutput];
   [self setPreview:[[AVCaptureVideoPreviewLayer alloc] initWithSession:[self session]]];
-  [self.preview setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+  [self.preview setVideoGravity:AVLayerVideoGravityResizeAspect];
 }
 
 -(void) captureStart:(NSError **)startError {
