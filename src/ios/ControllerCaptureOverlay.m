@@ -210,7 +210,9 @@
     [[self.manager preview] setBounds:layer];
     [[self.manager preview] setPosition:CGPointMake(CGRectGetMidX(layer), CGRectGetMidY(layer))];
     
-    UIView* cameraView = [[UIView alloc] init];
+    UIView* cameraView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screen.width, screen.height)];
+    cameraView.backgroundColor = [UIColor blackColor];
+    
     [self.view addSubview:cameraView];
     [self.view sendSubviewToBack:cameraView];
     [[cameraView layer] addSublayer:self.manager.preview];
