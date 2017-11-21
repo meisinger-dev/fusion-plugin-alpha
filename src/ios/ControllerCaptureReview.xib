@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VideoPlaybackViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ControllerCaptureReview">
             <connections>
                 <outlet property="cancelButton" destination="ZsH-Ty-Lkr" id="M1L-nZ-bFC"/>
                 <outlet property="playbackButton" destination="dts-ye-hy3" id="p4N-ds-6ck"/>

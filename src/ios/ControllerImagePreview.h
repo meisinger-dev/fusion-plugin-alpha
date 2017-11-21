@@ -10,8 +10,8 @@
 }
 
 @property (weak, nonatomic) IBOutlet UIView* imageView;
-@property (weak, nonatomic) IBOutlet UIButton* saveButton;
-@property (weak, nonatomic) IBOutlet UIButton* retakeButton;
+@property (weak, nonatomic) IBOutlet UIButton* nextButton;
+@property (weak, nonatomic) IBOutlet UIButton* backButton;
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
 @property (strong, nonatomic) NSURL* movieUrl;
 @property (strong, nonatomic) UIImage* movieImage;

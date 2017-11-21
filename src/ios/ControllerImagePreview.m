@@ -41,6 +41,11 @@
 
 -(void) viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  [[self.backButton layer] setCornerRadius:8];
+  [[self.nextButton layer] setCornerRadius:8];
+
+  [self.backButton setClipsToBounds:YES];
+  [self.nextButton setClipsToBounds:YES];
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.imageView addSubview:movieImageView];

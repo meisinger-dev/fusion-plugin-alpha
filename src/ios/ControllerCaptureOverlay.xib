@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VideoOverlayViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ControllerCaptureOverlay">
             <connections>
                 <outlet property="cancelButton" destination="ZsH-Ty-Lkr" id="M1L-nZ-bFC"/>
                 <outlet property="captureButton" destination="4K1-Uo-rlf" id="IkM-Gg-3oK"/>
@@ -39,7 +39,7 @@
                     <color key="backgroundColor" red="0.13693991137258754" green="0.1510961300981512" blue="0.18826726387819481" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="FusionPlugin.bundle/vid-guidelines.png" translatesAutoresizingMaskIntoConstraints="NO" id="hR4-T1-i2L">
-                    <rect key="frame" x="0.0" y="20.0" width="415" height="567"/>
+                    <rect key="frame" x="0.0" y="0.0" width="415" height="609"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Ty-Lkr">
