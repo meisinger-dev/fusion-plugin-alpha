@@ -27,9 +27,9 @@
                     <rect key="frame" x="0.0" y="614" width="414" height="122"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VlP-lt-cgl" userLabel="Back Button">
-                            <rect key="frame" x="34" y="22" width="162" height="66"/>
-                            <autoresizingMask key="autoresizingMask" heightSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES" flexibleMinY="YES"/>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VlP-lt-cgl" userLabel="Back Button">
+                            <rect key="frame" x="34" y="22" width="165" height="66"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES" />
                             <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -45,9 +45,9 @@
                                 <action selector="retakePicture:forEvent:" destination="-1" eventType="touchUpInside" id="i1R-1v-HMQ"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jb3-pI-fe0" userLabel="Next Button">
-                            <rect key="frame" x="218" y="22" width="162" height="66"/>
-                            <autoresizingMask key="autoresizingMask" heightSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES" flexibleMinY="YES"/>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jb3-pI-fe0" userLabel="Next Button">
+                            <rect key="frame" x="218" y="22" width="165" height="66"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES" />
                             <color key="backgroundColor" red="0.0017331319400000001" green="0.72684097290000005" blue="0.4294269979" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <color key="tintColor" red="0.0017331319400000001" green="0.72684097290000005" blue="0.4294269979" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
