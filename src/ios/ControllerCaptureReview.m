@@ -198,6 +198,7 @@
 
 -(void) viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIInterfaceOrientationPortrait] forKey:@"orientation"];
   
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.playerView addSubview:self.moviePlayer.view];
@@ -223,6 +224,18 @@
   
   [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
   [super viewWillDisappear:animated];
+}
+
+-(BOOL) shouldAutorotate {
+  return NO;
+}
+
+-(UIInterfaceOrientation) preferredInterfaceOrientationForPresentation {
+  return UIInterfaceOrientationPortrait;
+}
+
+-(UIInterfaceOrientationMask) supportedInterfaceOrientations {
+  return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

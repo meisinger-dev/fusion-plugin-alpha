@@ -185,6 +185,7 @@
 
 -(void) viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIInterfaceOrientationPortrait] forKey:@"orientation"];
   
   if (alertController) {
     [self presentViewController:alertController animated:YES completion:nil];
@@ -247,6 +248,18 @@
 
 -(BOOL) prefersStatusBarHidden {
   return YES;
+}
+
+-(BOOL) shouldAutorotate {
+  return NO;
+}
+
+-(UIInterfaceOrientation) preferredInterfaceOrientationForPresentation {
+  return UIInterfaceOrientationPortrait;
+}
+
+-(UIInterfaceOrientationMask) supportedInterfaceOrientations {
+  return UIInterfaceOrientationMaskPortrait;
 }
 
 -(UIViewController *) childViewControllerForStatusBarHidden {
