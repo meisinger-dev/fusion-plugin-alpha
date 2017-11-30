@@ -9,6 +9,7 @@
 
 @implementation ControllerCaptureOverlay {
     CaptureFocus* focusSquare;
+    NSTimer* recordingTimer;
     UIAlertController* alertController;
     UITapGestureRecognizer* tapRecognizer;
 }
@@ -29,6 +30,11 @@
   if ([self.captureButton isSelected]) {
     [[self captureButton] setUserInteractionEnabled:NO];
     [self.manager captureStop];
+
+    if ([recordingTimer isValid])
+      [recordingTimer invalidate];
+    recordingTimer = nil;
+
     AudioServicesPlaySystemSound(1114);
   } else {
     [self.overlayImage setHidden:YES];
@@ -46,6 +52,7 @@
       return;
     }
 
+    recordingTimer = [NSTimer scheduledTimerWithTimeInterval:20.0f target:self selector:@selector(recordingTimerFired:) userInfo:nil repeats:NO];
     AudioServicesPlaySystemSound(1113);
   }
   
@@ -92,6 +99,20 @@
     tapRecognizer.numberOfTouchesRequired = 1;
     [self.view addGestureRecognizer:tapRecognizer];
   }];
+}
+
+-(void) recordingTimerFired:(NSTimer *)timer {
+  [[self captureButton] setUserInteractionEnabled:NO];
+  [self.manager captureStop];
+
+  if ([recordingTimer isValid])
+    [recordingTimer invalidate];
+  recordingTimer = nil;
+
+  AudioServicesPlaySystemSound(1114);
+
+  [self.cancelButton setHidden:YES];
+  [self.captureButton setSelected:NO];
 }
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {

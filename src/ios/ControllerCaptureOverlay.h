@@ -14,5 +14,6 @@
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) captureToggle:(id)sender forEvent:(UIEvent*)event;
 -(void) retakeVideo:(UIViewController*)child forMovie:(NSURL*)movieUrl;
+-(void) recordingTimerFired:(NSTimer*)timer;
 
 @end

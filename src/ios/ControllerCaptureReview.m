@@ -72,6 +72,8 @@
   
   NSNumber* timestamp = [NSNumber numberWithFloat:CMTimeGetSeconds(currentTime)];
   UIImage* image = [UIImage imageWithCGImage:imageRef];
+
+  CGImageRelease(imageRef);
   AudioServicesPlaySystemSound(1108);
   
   ControllerImagePreview* review = [[ControllerImagePreview alloc] initWithNibName:@"ControllerImagePreview" bundle:nil];
@@ -91,9 +93,7 @@
   frame.size.height = self.view.frame.size.height;
   
   review.view.frame = frame;
-  [UIView animateWithDuration:0.25f animations:^{review.view.frame = self.view.bounds;} completion:^(BOOL finished) {
-    CGImageRelease(imageRef);
-  }];
+  [UIView animateWithDuration:0.25f animations:^{review.view.frame = self.view.bounds;}];
 }
 
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent *)event {
