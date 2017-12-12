@@ -39,7 +39,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Egh-Pk-K56">
-                            <rect key="frame" x="38" y="29" width="61" height="77"/>
+                            <rect key="frame" x="38" y="25" width="61" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <state key="normal" image="FusionPlugin.bundle/btn-retake.png"/>
@@ -49,11 +49,11 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="knZ-7c-XGu">
-                            <rect key="frame" x="315" y="29" width="71" height="77"/>
+                            <rect key="frame" x="315" y="25" width="71" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" image="FusionPlugin.bundle/btn-capture.png"/>
-                            <state key="highlighted" image="FusionPlugin.bundle/btn-capture-touch.png"/>
+                            <state key="normal" image="FusionPlugin.bundle/btn-save.png"/>
+                            <state key="highlighted" image="FusionPlugin.bundle/btn-save-touch.png"/>
                             <connections>
                                 <action selector="takePicture:forEvent:" destination="-1" eventType="touchUpInside" id="OHK-nA-NYE"/>
                             </connections>
@@ -91,8 +91,8 @@
     </objects>
     <resources>
         <image name="btn-back" width="128" height="128"/>
-        <image name="btn-capture" width="58" height="77"/>
-        <image name="btn-capture-touch" width="58" height="77"/>
+        <image name="btn-save" width="71" height="77"/>
+        <image name="btn-save-touch" width="71" height="77"/>
         <image name="btn-retake" width="61" height="77"/>
         <image name="btn-retake-touch" width="61" height="77"/>
         <image name="btn-play" width="74" height="74"/>
