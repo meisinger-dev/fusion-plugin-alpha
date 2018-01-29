@@ -35,7 +35,13 @@
 }
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent *)event {
-  [self.plugin cancelled];
+  alertController = [UIAlertController alertControllerWithTitle:@"Warning" message:@"You are about to leave this section of the test and will lose any data." preferredStyle:UIAlertControllerStyleAlert];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+    [self.plugin cancelled];
+  }]];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
+  
+  [self presentViewController:alertController animated:YES completion:nil];
 }
 
 -(IBAction) retakeVideo:(id)sender forEvent:(UIEvent *)event {
@@ -108,6 +114,8 @@
 }
 
 -(IBAction) seekbarAction:(UISlider *)sender forEvent:(UIEvent *)event {
+  [[self.infoView layer] setHidden:TRUE];
+
   AVPlayer* player = self.moviePlayer.player;
   AVPlayerItem* playerItem = [player currentItem];
   CMTime duration = [playerItem.asset duration];
@@ -131,6 +139,8 @@
 }
 
 -(void) retakePicture:(UIViewController *)child {
+  [[self.infoView layer] setHidden:FALSE];
+
   CGFloat point = CGRectGetWidth(child.view.frame);
   CGRect frame = child.view.bounds;
   frame.origin.x += point;
@@ -181,6 +191,7 @@
 
 -(void) viewDidLoad {
   [super viewDidLoad];
+  [[self.infoView layer] setCornerRadius:8];
   
   AVPlayer* player = [AVPlayer playerWithURL:self.movieUrl];
   player.actionAtItemEnd = AVPlayerActionAtItemEndPause;

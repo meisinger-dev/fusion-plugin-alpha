@@ -23,7 +23,13 @@
 }
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent *)event {
-  [self.plugin cancelled];
+  alertController = [UIAlertController alertControllerWithTitle:@"Warning" message:@"You are about to leave this section of the test and will lose any data." preferredStyle:UIAlertControllerStyleAlert];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+    [self.plugin cancelled];
+  }]];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
+  
+  [self presentViewController:alertController animated:YES completion:nil];
 }
 
 -(IBAction) captureToggle:(id)sender forEvent:(UIEvent *)event {

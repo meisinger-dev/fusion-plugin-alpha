@@ -42,8 +42,8 @@
                     <rect key="frame" x="0.0" y="0.0" width="415" height="609"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Ty-Lkr">
-                    <rect key="frame" x="20" y="20" width="55" height="55"/>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Ty-Lkr">
+                    <rect key="frame" x="20" y="20" width="40" height="40"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <size key="titleShadowOffset" width="10" height="10"/>
                     <state key="normal" image="FusionPlugin.bundle/btn-back.png" />

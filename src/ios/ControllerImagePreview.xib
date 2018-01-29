@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="cancelButton" destination="ZsH-Ty-Lkr" id="M1L-nZ-bFC"/>
                 <outlet property="imageView" destination="FvC-zh-VwV" id="ZGc-ZA-hPc"/>
+                <outlet property="infoView" destination="IwH-FM-wW3" id="Di3-uS-sBk"/>
                 <outlet property="backButton" destination="VlP-lt-cgl" id="hm4-Uo-2LR"/>
                 <outlet property="nextButton" destination="jb3-pI-fe0" id="nyu-Kj-fvY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -71,8 +72,8 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Ty-Lkr">
-                    <rect key="frame" x="20" y="20" width="55" height="55"/>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Ty-Lkr">
+                    <rect key="frame" x="20" y="20" width="40" height="40"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <size key="titleShadowOffset" width="10" height="10"/>
                     <state key="normal" image="FusionPlugin.bundle/btn-back.png" />
@@ -82,11 +83,11 @@
                     </connections>
                 </button>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IwH-FM-wW3">
-                    <rect key="frame" x="81" y="15" width="251" height="60"/>
+                    <rect key="frame" x="16" y="24" width="380" height="75"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Screen Capture Confirmation" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iQu-wG-4dJ">
-                            <rect key="frame" x="8" y="8" width="235" height="45"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Is this the image you want to analyze? Click Next to continue or Back to capture a new image." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iQu-wG-4dJ">
+                            <rect key="frame" x="5" y="8" width="370" height="60"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -94,7 +95,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="0.13853701949119568" green="0.15320950746536255" blue="0.18664982914924622" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                 </view>
             </subviews>

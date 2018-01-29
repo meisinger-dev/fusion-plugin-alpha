@@ -3,7 +3,9 @@
 #import "FusionPlugin.h"
 #import "ControllerImagePreview.h"
 
-@implementation ControllerImagePreview
+@implementation ControllerImagePreview {
+  UIAlertController* alertController;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -11,7 +13,13 @@
 }
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent *)event {
-  [self.plugin cancelled];
+  alertController = [UIAlertController alertControllerWithTitle:@"Warning" message:@"You are about to leave this section of the test and will lose any data." preferredStyle:UIAlertControllerStyleAlert];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+    [self.plugin cancelled];
+  }]];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil]];
+  
+  [self presentViewController:alertController animated:YES completion:nil];
 }
 
 -(IBAction) retakePicture:(id)sender forEvent:(UIEvent *)event {
@@ -34,6 +42,7 @@
 
 -(void) viewDidLoad {
   [super viewDidLoad];
+  [[self.infoView layer] setCornerRadius:8];
   
   movieImageView = [[UIImageView alloc] initWithImage:self.movieImage];
   movieImageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -62,6 +71,8 @@
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
+  alertController = nil;
+  
   [super viewWillDisappear:animated];
 }
 

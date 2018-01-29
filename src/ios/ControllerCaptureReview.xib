@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ControllerCaptureReview">
             <connections>
                 <outlet property="cancelButton" destination="ZsH-Ty-Lkr" id="M1L-nZ-bFC"/>
+                <outlet property="infoView" destination="zS0-HF-Ucp" id="vlP-Nn-9Ne"/>
                 <outlet property="playbackButton" destination="dts-ye-hy3" id="p4N-ds-6ck"/>
                 <outlet property="playerView" destination="EGn-5I-GfY" id="q5z-F7-qhc"/>
                 <outlet property="retakeButton" destination="Egh-Pk-K56" id="WL1-4O-bb6"/>
@@ -40,7 +41,7 @@
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Egh-Pk-K56">
                             <rect key="frame" x="38" y="25" width="61" height="77"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <state key="normal" image="FusionPlugin.bundle/btn-retake.png"/>
                             <state key="highlighted" image="FusionPlugin.bundle/btn-retake-touch.png"/>
@@ -50,7 +51,7 @@
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="knZ-7c-XGu">
                             <rect key="frame" x="315" y="25" width="71" height="77"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <state key="normal" image="FusionPlugin.bundle/btn-save.png"/>
                             <state key="highlighted" image="FusionPlugin.bundle/btn-save-touch.png"/>
@@ -74,8 +75,8 @@
                         <action selector="seekbarPause:forEvent:" destination="-1" eventType="touchDown" id="CDM-o1-5QU"/>
                     </connections>
                 </slider>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Ty-Lkr">
-                    <rect key="frame" x="20" y="20" width="55" height="55"/>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZsH-Ty-Lkr">
+                    <rect key="frame" x="20" y="20" width="40" height="40"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <size key="titleShadowOffset" width="10" height="10"/>
                     <state key="normal" image="FusionPlugin.bundle/btn-back.png" />
@@ -84,6 +85,25 @@
                         <action selector="cancel:forEvent:" destination="-1" eventType="touchUpInside" id="gX3-MS-aN8"/>
                     </connections>
                 </button>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zS0-HF-Ucp">
+                    <rect key="frame" x="16" y="24" width="380" height="75"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Use the tool bar to capture an image of the subject at the bottom of their squat" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5T2-CE-y8B">
+                            <rect key="frame" x="28" y="17" width="325" height="40"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <accessibility key="accessibilityConfiguration">
+                                <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                            </accessibility>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.2901960784" green="0.2901960784" blue="0.2901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <point key="canvasLocation" x="32.5" y="52.5"/>

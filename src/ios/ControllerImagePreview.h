@@ -10,6 +10,7 @@
 }
 
 @property (weak, nonatomic) IBOutlet UIView* imageView;
+@property (weak, nonatomic) IBOutlet UIView* infoView;
 @property (weak, nonatomic) IBOutlet UIButton* nextButton;
 @property (weak, nonatomic) IBOutlet UIButton* backButton;
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
