@@ -1,0 +1,19 @@
+{
+  "name": "fusion-plugin-alpha",
+  "version": "0.2.7",
+  "description": "fusionetics ios plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fusion-mike/fusion-plugin-alpha.git"
+  },
+  "author": "mmeisinger@fusionetics.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fusion-mike/fusion-plugin-alpha/issues"
+  },
+  "homepage": "https://github.com/fusion-mike/fusion-plugin-alpha#readme"
+}
