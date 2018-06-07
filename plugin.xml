@@ -32,6 +32,7 @@
     <header-file src="src/ios/ControllerCaptureOverlay.h" />
     <header-file src="src/ios/ControllerCaptureReview.h" />
     <header-file src="src/ios/ControllerImagePreview.h" />
+    <header-file src="src/ios/FusionExercise.h" />
     <header-file src="src/ios/FusionPlugin.h" />
     <header-file src="src/ios/FusionResult.h" />
 
@@ -40,6 +41,7 @@
     <source-file src="src/ios/ControllerCaptureOverlay.m" />
     <source-file src="src/ios/ControllerCaptureReview.m" />
     <source-file src="src/ios/ControllerImagePreview.m" />
+    <source-file src="src/ios/FusionExercise.m" />
     <source-file src="src/ios/FusionPlugin.m" />
     <source-file src="src/ios/FusionResult.m" />
 
