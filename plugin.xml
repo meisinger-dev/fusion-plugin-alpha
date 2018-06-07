@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  id="cordova-plugin-fusion-bodymap" version="1.0.3">
+  id="cordova-plugin-fusion-bodymap" version="1.0.4">
   <name>FusionBodyMap</name>
   <description>Fusionetic Plugin</description>
   <license>MIT</license>
@@ -11,6 +11,7 @@
   </engines>
 
   <dependency id="cordova-plugin-compat" version="^1.1.0" />
+  <dependency id="cordova-plugin-cocoapod-support" />
   <js-module src="www/FusionBodyMap.js" name="FusionBodyMap">
     <clobbers target="fusionetics.bodyMap" />
   </js-module>
@@ -52,7 +53,10 @@
     <framework src="Foundation.framework" />
     <framework src="MobileCoreServices.framework" />
     <framework src="QuartzCore.framework" />
-    <framework src="MaterialComponents" type="podspec" spec="~> 19.0.2" />
+
+    <pods-config use-frameworks="true" />
+    <pod name="MaterialComponents" />
+    <!--<framework src="MaterialComponents" type="podspec" spec="~> 19.0.2" />-->
 
     <preference name="CAMERA_USAGE_DESCRIPTION" default="" />
     <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
