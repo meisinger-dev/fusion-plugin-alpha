@@ -35,8 +35,8 @@
     __weak id weakSelf = self;
 
     id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-    [self.slider setHidden:(exerciseVideoUrl != nil)];
-    [self.playbackButton setSelected:(exerciseVideoUrl == nil)];
+    [self.slider setHidden:(exerciseVideoUrl == nil)];
+    [self.playbackButton setSelected:(exerciseVideoUrl != nil)];
     [self.playbackButton setHidden:NO];
     
     CGFloat seekbarWidth = CGRectGetWidth([self.slider bounds]);
