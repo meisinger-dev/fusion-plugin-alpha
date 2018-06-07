@@ -8,6 +8,6 @@
 @property (assign, nullable) NSURL* instructionsUrl;
 @property (assign, nullable) NSURL* videoUrl;
 
--(id) initWithData:(NSString *)name_;
+-(id)initWithData:(NSString*)name_;
 
 @end

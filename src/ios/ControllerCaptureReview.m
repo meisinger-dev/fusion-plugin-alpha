@@ -61,7 +61,7 @@
 
 -(IBAction) retakeVideo:(id)sender forEvent:(UIEvent *)event {
   ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
-  [parent retakeVideo:self forMovie:self.movieUrl];
+  [parent retakeVideo:self forMovie:[self.plugin currentVideoUrl]];
 }
 
 -(IBAction) saveVideo:(id)sender forEvent:(UIEvent *)event {
@@ -229,7 +229,7 @@
 
       if (durationSeconds == rangeSeconds) {
         if ((waitIndicator && waitLabel) && waitIndicator.isAnimating) {
-          [waitIndicator setProgress:100]
+          [waitIndicator setProgress:100];
           [waitLabel setText:@"100"];
           loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(loadingFinishFired:) userInfo:nil repeats:NO];
           return;
@@ -245,7 +245,7 @@
       if (waitIndicator && waitLabel) {
         float percentage = ((rangeSeconds / durationSeconds));
         [waitIndicator setProgress:percentage];
-        [waitLabel setText[NSString stringWithFormat:@"%d%%", (int)(percentage * 100)]];
+        [waitLabel setText:[NSString stringWithFormat:@"%d%%", (int)(percentage * 100)]];
 
         if (!waitIndicator.isAnimating)
           [waitIndicator startAnimating];
@@ -349,7 +349,7 @@
 
 -(void) ensureDecisionModal {
   CGRect mainBounds = [[UIScreen mainScreen] bounds];
-  CGSize mainSize = bounds.size;
+  CGSize mainSize = mainBounds.size;
   CGRect modalBounds = CGRectMake(0, 0, mainSize.width - 50, 275);
   if (modalBounds.size.width > 350)
     modalBounds = CGRectMake(0, 0, 350, 275);
