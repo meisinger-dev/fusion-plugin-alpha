@@ -72,7 +72,7 @@
     return;
 
   id videoUrl = jsonData[@"videoUrl"];
-  self.currentVideoUrl = (videoUrl == nil) ? [[NSURL alloc] initWithString:[videoUrl stringValue]] : nil;
+  self.currentVideoUrl = (videoUrl == nil) ? [[NSURL alloc] initWithString:videoUrl] : nil;
   self.exercise = [[FusionExercise alloc] initWithData:jsonData[@"name"]];
 }
 
@@ -85,7 +85,7 @@
     return;
 
   id endpointUrl = jsonData[@"endpointUrl"];
-  self.uploadEndpointUrl = (endpointUrl == nil) ? [[NSURL alloc] initWithString:[endpointUrl stringValue]] : nil;
+  self.uploadEndpointUrl = (endpointUrl == nil) ? [[NSURL alloc] initWithString:endpointUrl] : nil;
 }
 
 @end
