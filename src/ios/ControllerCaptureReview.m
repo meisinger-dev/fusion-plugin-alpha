@@ -111,15 +111,17 @@
     [self presentViewController:alertController animated:YES completion:nil];
     return;
   }
-  
+
   [[self takeButton] setUserInteractionEnabled:NO];
+  UIImage* image = [UIImage imageWithCGImage:imageRef];
+  
   CGImageRelease(imageRef);
   AudioServicesPlaySystemSound(1108);
   
   ControllerImagePreview* review = [[ControllerImagePreview alloc] initWithNibName:@"ControllerImagePreview" bundle:nil];
   [review setPlugin:self.plugin];
   [review setMovieTime:[NSNumber numberWithFloat:CMTimeGetSeconds(currentTime)]];
-  [review setMovieImage:[UIImage imageWithCGImage:imageRef]];
+  [review setMovieImage:image];
   
   [self addChildViewController:review];
   [self.view addSubview:review.view];
