@@ -138,19 +138,26 @@
 }
 
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent *)event {
+  id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
+
   if ([self.playbackButton isSelected]) {
-      [self.moviePlayer.player pause];
+    [self.captureInfoView setHidden:!(exerciseVideoUrl != nil)];
+    [self.saveInfoView setHidden:!(exerciseVideoUrl == nil)];
+    [self.moviePlayer.player pause];
   } else {
-      [self.moviePlayer.player play];
+    [self.captureInfoView setHidden:YES];
+    [self.saveInfoView setHidden:YES];
+    [self.moviePlayer.player play];
   }
   
-  [self.takeButton setHidden:![self.playbackButton isSelected]];
+  [self.takeButton setHidden:(![self.playbackButton isSelected] && exerciseVideoUrl != nil)];
+  [self.saveButton setHidden:(![self.playbackButton isSelected] && exerciseVideoUrl == nil)];
   [self.playbackButton setSelected:![self.playbackButton isSelected]];
 }
 
 -(IBAction) seekbarAction:(UISlider *)sender forEvent:(UIEvent *)event {
-  [[self.captureInfoView layer] setHidden:TRUE];
-  [[self.saveInfoView layer] setHidden:TRUE];
+  [[self.captureInfoView layer] setHidden:YES];
+  [[self.saveInfoView layer] setHidden:YES];
 
   AVPlayer* player = self.moviePlayer.player;
   AVPlayerItem* playerItem = [player currentItem];
@@ -260,7 +267,6 @@
 }
 
 -(void) URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
-  
   dispatch_async(dispatch_get_main_queue(), ^(void) {
     if (totalBytesSent == totalBytesExpectedToSend) {
       if ((waitIndicator && waitLabel) && waitIndicator.isAnimating) {
@@ -282,7 +288,6 @@
 }
 
 -(void) URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-  
   NSError* error = nil;
   NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
   if (error != nil)
