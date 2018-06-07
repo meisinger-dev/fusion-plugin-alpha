@@ -12,11 +12,12 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ControllerCaptureReview">
             <connections>
                 <outlet property="cancelButton" destination="ZsH-Ty-Lkr" id="M1L-nZ-bFC"/>
-                <outlet property="infoView" destination="zS0-HF-Ucp" id="vlP-Nn-9Ne"/>
+                <outlet property="captureInfoView" destination="zS0-HF-Ucp" id="JLX-ZQ-VPu"/>
                 <outlet property="playbackButton" destination="dts-ye-hy3" id="p4N-ds-6ck"/>
                 <outlet property="playerView" destination="EGn-5I-GfY" id="q5z-F7-qhc"/>
                 <outlet property="retakeButton" destination="Egh-Pk-K56" id="WL1-4O-bb6"/>
                 <outlet property="saveButton" destination="Jvh-Qr-cHb" id="TDp-8e-Q95"/>
+                <outlet property="saveInfoView" destination="NOI-rQ-ivB" id="vQF-GY-syy"/>
                 <outlet property="slider" destination="Trq-3S-GzW" id="eZQ-2q-dR3"/>
                 <outlet property="takeButton" destination="knZ-7c-XGu" id="oKd-UG-7uK"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -101,6 +102,25 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Use the tool bar to capture an image of the subject at the bottom of their squat" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5T2-CE-y8B">
+                            <rect key="frame" x="28" y="17" width="325" height="40"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <accessibility key="accessibilityConfiguration">
+                                <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                            </accessibility>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.2901960784" green="0.2901960784" blue="0.2901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                </view>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NOI-rQ-ivB">
+                    <rect key="frame" x="16" y="24" width="380" height="75"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Review the captured video prior to uploading" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="csi-KY-wGJ">
                             <rect key="frame" x="28" y="17" width="325" height="40"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>

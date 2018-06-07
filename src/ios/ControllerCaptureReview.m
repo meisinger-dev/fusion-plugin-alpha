@@ -114,7 +114,7 @@
 
   [[self takeButton] setUserInteractionEnabled:NO];
   UIImage* image = [UIImage imageWithCGImage:imageRef];
-  
+
   CGImageRelease(imageRef);
   AudioServicesPlaySystemSound(1108);
   
@@ -149,7 +149,8 @@
 }
 
 -(IBAction) seekbarAction:(UISlider *)sender forEvent:(UIEvent *)event {
-  [[self.infoView layer] setHidden:TRUE];
+  [[self.captureInfoView layer] setHidden:TRUE];
+  [[self.saveInfoView layer] setHidden:TRUE];
 
   AVPlayer* player = self.moviePlayer.player;
   AVPlayerItem* playerItem = [player currentItem];
@@ -174,7 +175,8 @@
 }
 
 -(void) retakePicture:(UIViewController *)child {
-  [[self.infoView layer] setHidden:FALSE];
+  [[self.captureInfoView layer] setHidden:NO];
+  [[self.saveInfoView layer] setHidden:YES];
 
   CGFloat point = CGRectGetWidth(child.view.frame);
   CGRect frame = child.view.bounds;
@@ -195,11 +197,12 @@
   [item seekToTime:kCMTimeZero];
 
   id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl == nil)
+  if (exerciseVideoUrl == nil) {
     [self.saveButton setHidden:NO];
-  else {
+    [self.saveInfoView setHidden:NO];
+  } else {
     [self.takeButton setHidden:NO];
-    [self.infoView setHidden:NO];
+    [self.captureInfoView setHidden:NO];
   }
 
   [self.playbackButton setSelected:NO];
@@ -529,8 +532,8 @@
 
 -(void) viewDidLoad {
   [super viewDidLoad];
-  [[self.infoView layer] setCornerRadius:8];
-
+  [[self.captureInfoView layer] setCornerRadius:8];
+  [[self.saveInfoView layer] setCornerRadius:8];
   loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(loadingBeginFired:) userInfo:nil repeats:NO];
   
   AVPlayer* player = [AVPlayer playerWithURL:[self.plugin currentVideoUrl]];
@@ -562,8 +565,10 @@
     [self.playerView addSubview:self.moviePlayer.view];
     
     id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-    if (exerciseVideoUrl != nil)
+    if (exerciseVideoUrl != nil) {
       [self.saveButton setHidden:YES];
+      [self.saveInfoView setHidden:YES];
+    }
     
     [self.takeButton setHidden:YES];
     [self.playbackButton setSelected:YES];

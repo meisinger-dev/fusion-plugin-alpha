@@ -10,7 +10,8 @@
 }
 
 @property (weak, nonatomic) IBOutlet UIView* playerView;
-@property (weak, nonatomic) IBOutlet UIView* infoView;
+@property (weak, nonatomic) IBOutlet UIView* captureInfoView;
+@property (weak, nonatomic) IBOutlet UIView* saveInfoView;
 @property (weak, nonatomic) IBOutlet UISlider* slider;
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton* takeButton;
