@@ -16,7 +16,7 @@ FusioneticsPlugin.prototype.captureVideo = function (cbSuccess, cbError, options
     settings = JSON.stringify(options.settings);
 
   cordova.exec(cbLifted, cbError,
-    'FusionBodyMap', 'takeVideo', [markers, settings]);
+    'FusionBodyMap', 'takeVideo', [exercise, settings]);
 };
 
 
