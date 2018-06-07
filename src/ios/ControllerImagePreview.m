@@ -32,8 +32,7 @@
   
   FusionResult* result = [[FusionResult alloc] init];
   [result setCapturedImage:YES];
-  [result setCapturedVideo:YES];
-  [result setVideoUrl:self.movieUrl];
+  [result setCapturedVideo:NO];
   [result setVideoTimestamp:self.movieTime];
   [result setVideoImage:[imageData base64EncodedStringWithOptions:kNilOptions]];
   
@@ -76,6 +75,20 @@
   [super viewWillDisappear:animated];
 }
 
+-(void) didReceiveMemoryWarning {
+  alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Image" message:@"It appears you are running low on memory. Try closing a few applications. Make sure you have enough space to record a movie or video." preferredStyle:UIAlertControllerStyleAlert];
+  [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+    [self.plugin failed:@"Low memory warning"];
+  }]];
+
+  [self presentViewController:alertController animated:YES completion:nil];
+  [super didReceiveMemoryWarning];
+}
+
+-(BOOL) prefersStatusBarHidden {
+  return YES;
+}
+
 -(BOOL) shouldAutorotate {
   return NO;
 }
@@ -86,6 +99,10 @@
 
 -(UIInterfaceOrientationMask) supportedInterfaceOrientations {
   return UIInterfaceOrientationMaskPortrait;
+}
+
+-(UIViewController *) childViewControllerForStatusBarHidden {
+  return nil;
 }
 
 @end

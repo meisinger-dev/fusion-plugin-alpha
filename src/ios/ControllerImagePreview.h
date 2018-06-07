@@ -14,10 +14,9 @@
 @property (weak, nonatomic) IBOutlet UIButton* nextButton;
 @property (weak, nonatomic) IBOutlet UIButton* backButton;
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
-@property (strong, nonatomic) NSURL* movieUrl;
 @property (strong, nonatomic) UIImage* movieImage;
 @property (strong, nonatomic) NSNumber* movieTime;
-@property (strong, nonatomic) FusionPlugin* plugin;
+@property (atomic) FusionPlugin* plugin;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) retakePicture:(id)sender forEvent:(UIEvent*)event;

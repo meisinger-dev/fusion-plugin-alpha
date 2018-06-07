@@ -16,6 +16,7 @@
                 <outlet property="playbackButton" destination="dts-ye-hy3" id="p4N-ds-6ck"/>
                 <outlet property="playerView" destination="EGn-5I-GfY" id="q5z-F7-qhc"/>
                 <outlet property="retakeButton" destination="Egh-Pk-K56" id="WL1-4O-bb6"/>
+                <outlet property="saveButton" destination="Jvh-Qr-cHb" id="TDp-8e-Q95"/>
                 <outlet property="slider" destination="Trq-3S-GzW" id="eZQ-2q-dR3"/>
                 <outlet property="takeButton" destination="knZ-7c-XGu" id="oKd-UG-7uK"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -30,7 +31,7 @@
                     <rect key="frame" x="0.0" y="614" width="414" height="127"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dts-ye-hy3">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dts-ye-hy3">
                             <rect key="frame" x="161" y="17" width="92" height="92"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <state key="normal" backgroundImage="FusionPlugin.bundle/btn-play.png"/>
@@ -39,7 +40,7 @@
                                 <action selector="togglePlayback:forEvent:" destination="-1" eventType="touchUpInside" id="jCT-u9-4Jx"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Egh-Pk-K56">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Egh-Pk-K56">
                             <rect key="frame" x="38" y="25" width="61" height="77"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -59,6 +60,16 @@
                                 <action selector="takePicture:forEvent:" destination="-1" eventType="touchUpInside" id="OHK-nA-NYE"/>
                             </connections>
                         </button>
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jvh-Qr-cHb">
+                            <rect key="frame" x="315" y="25" width="71" height="77"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <state key="normal" image="FusionPlugin.bundle/btn-capture.png"/>
+                            <state key="highlighted" image="FusionPlugin.bundle/btn-capture-touch.png"/>
+                            <connections>
+                                <action selector="saveVideo:forEvent:" destination="-1" eventType="touchUpInside" id="ATi-Nu-gPw"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" red="0.13693991137258754" green="0.1510961300981512" blue="0.18826726387819481" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
@@ -67,8 +78,8 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Trq-3S-GzW">
-                    <rect key="frame" x="6" y="571" width="402" height="31"/>
+                <slider hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Trq-3S-GzW">
+                    <rect key="frame" x="18" y="571" width="378" height="31"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <connections>
                         <action selector="seekbarAction:forEvent:" destination="-1" eventType="valueChanged" id="tuB-bZ-9Bs"/>

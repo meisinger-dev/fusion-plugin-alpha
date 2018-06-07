@@ -12,6 +12,7 @@
     NSTimer* recordingTimer;
     UIAlertController* alertController;
     UITapGestureRecognizer* tapRecognizer;
+    BOOL usingFocus;
 }
 
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -100,6 +101,9 @@
     [[self captureButton] setUserInteractionEnabled:YES];
     [[self overlayImage] setHidden:NO];
 
+    [[self.manager device] addObserver:self forKeyPath:@"adjustingFocus" options:NSKeyValueObservingOptionNew context:nil];
+    usingFocus = YES;
+
     tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusTap:)];
     tapRecognizer.numberOfTapsRequired = 1;
     tapRecognizer.numberOfTouchesRequired = 1;
@@ -167,12 +171,15 @@
 }
 
 -(void) viewPlayer:(NSURL *)outputFileUrl {
+  [self.plugin setCurrentVideoUrl:outputFileUrl];
+
   ControllerCaptureReview* player = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerCaptureReview" bundle:nil];
-  player.plugin = self.plugin;
-  player.movieUrl = outputFileUrl;
+  [player setPlugin:self.plugin];
   
+  [[self.manager device] removeObserver:self forKeyPath:@"adjustingFocus"];
   [self.view removeGestureRecognizer:tapRecognizer];
   tapRecognizer = nil;
+  usingFocus = NO;
 
   [self addChildViewController:player];
   [self.view addSubview:player.view];
@@ -185,7 +192,12 @@
   frame.size.height = self.view.frame.size.height;
   
   player.view.frame = frame;
-  [UIView animateWithDuration:0.25f animations:^{player.view.frame = self.view.bounds;}];
+  [UIView animateWithDuration:0.25f animations:^{
+    player.view.frame = self.view.bounds;
+    [player.takeButton setHidden:YES];
+    [player.saveButton setHidden:NO];
+    [player.retakeButton setHidden:NO];
+  }];
 }
 
 -(void) viewDidLoad {
@@ -253,7 +265,9 @@
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
-  [[self.manager device] removeObserver:self forKeyPath:@"adjustingFocus"];
+  if (usingFocus)
+    [[self.manager device] removeObserver:self forKeyPath:@"adjustingFocus"];
+  
   [self.manager captureTearDown];
   alertController = nil;
 
@@ -264,7 +278,7 @@
 }
 
 -(void) didReceiveMemoryWarning {
-  alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Video" message:@"In appears you are running low on memory. Try closing a few applications. Make sure you have enough space to record a movie or video." preferredStyle:UIAlertControllerStyleAlert];
+  alertController = [UIAlertController alertControllerWithTitle:@"Unable to Capture Video" message:@"It appears you are running low on memory. Try closing a few applications. Make sure you have enough space to record a movie or video." preferredStyle:UIAlertControllerStyleAlert];
   [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
     [self.plugin failed:@"Low memory warning"];
   }]];

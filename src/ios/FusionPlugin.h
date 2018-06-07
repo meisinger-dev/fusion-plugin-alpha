@@ -1,5 +1,6 @@
 
 #import <Cordova/CDV.h>
+#import "FusionExercise.h"
 #import "FusionResult.h"
 #import "ControllerCaptureOverlay.h"
 #import "ControllerCaptureReview.h"
@@ -8,9 +9,10 @@
   BOOL hasPendingOperation;
 }
 
-@property (strong, nonatomic) ControllerCaptureOverlay* overlay;
-@property (strong, nonatomic) ControllerCaptureReview* preview;
 @property (strong, nonatomic) CDVInvokedUrlCommand* command;
+@property (strong, atomic) FusionExercise* exercise;
+@property (strong, atomic) NSURL* currentVideoUrl;
+@property (strong, atomic) NSURL* uploadEndpointUrl;
 
 -(void) takeVideo:(CDVInvokedUrlCommand*)command;
 -(void) playVideo:(CDVInvokedUrlCommand*)command;

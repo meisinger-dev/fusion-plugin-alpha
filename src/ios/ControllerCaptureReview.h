@@ -5,7 +5,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 @class FusionPlugin;
-@interface ControllerCaptureReview : UIViewController {
+@interface ControllerCaptureReview : UIViewController <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate> {
   id seekbarObserver;
 }
 
@@ -14,14 +14,15 @@
 @property (weak, nonatomic) IBOutlet UISlider* slider;
 @property (weak, nonatomic) IBOutlet UIButton* cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton* takeButton;
+@property (weak, nonatomic) IBOutlet UIButton* saveButton;
 @property (weak, nonatomic) IBOutlet UIButton* retakeButton;
 @property (weak, nonatomic) IBOutlet UIButton* playbackButton;
 @property (strong, nonatomic) AVPlayerViewController* moviePlayer;
-@property (strong, nonatomic) NSURL* movieUrl;
 @property (strong, nonatomic) FusionPlugin* plugin;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) takePicture:(id)sender forEvent:(UIEvent*)event;
+-(IBAction) saveVideo:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) retakeVideo:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) seekbarAction:(UISlider*)sender forEvent:(UIEvent*)event;

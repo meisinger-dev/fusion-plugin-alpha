@@ -1,4 +1,5 @@
 
+#import "FusionExercise.h"
 #import "FusionResult.h"
 #import "FusionPlugin.h"
 
@@ -7,23 +8,25 @@
 
 -(void) takeVideo:(CDVInvokedUrlCommand *)command {
   hasPendingOperation = YES;
-  self.command = command;
+  [self identifyExercise:[command.arguments objectAtIndex:0]];
+  [self identifySettings:[command.arguments objectAtIndex:1]];
 
-  self.overlay = [[ControllerCaptureOverlay alloc] initWithNibName:@"ControllerCaptureOverlay" bundle:nil];
-  self.overlay.plugin = self;
+  ControllerCaptureOverlay* controller = [[ControllerCaptureOverlay alloc] initWithNibName:@"ControllerCaptureOverlay" bundle:nil];
+  [controller setPlugin:self];
 
-  [self.viewController presentViewController:self.overlay animated:YES completion:nil];
+  [self setCommand:command];
+  [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
 -(void) playVideo:(CDVInvokedUrlCommand *)command {
   hasPendingOperation = YES;
-  self.command = command;
+  [self identifyExercise:[command.arguments objectAtIndex:0]];
 
-  self.preview = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerCaptureReview" bundle:nil];
-  self.preview.plugin = self;
-  self.preview.movieUrl = [command.arguments objectAtIndex:0];
-
-  [self.viewController presentViewController:self.preview animated:YES completion:nil];
+  ControllerCaptureReview* controller = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerCaptureReview" bundle:nil];
+  [controller setPlugin:self];
+  
+  [self setCommand:command];
+  [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
 -(void) cancelled {
@@ -58,6 +61,31 @@
 
   hasPendingOperation = NO;
   [self.viewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) identifyExercise:(NSString *)json {
+  NSError* error;
+  NSData* data = [json dataUsingEncoding:NSUTF8StringEncoding];
+
+  id jsonData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+  if (jsonData == nil)
+    return;
+
+  id videoUrl = jsonData[@"videoUrl"];
+  self.currentVideoUrl = (videoUrl == nil) ? [[NSURL alloc] initWithString:[videoUrl stringValue]] : nil;
+  self.exercise = [[FusionExercise alloc] initWithData:jsonData[@"name"]];
+}
+
+-(void) identifySettings:(NSString *)json {
+  NSError* error;
+  NSData* data = [json dataUsingEncoding:NSUTF8StringEncoding];
+
+  id jsonData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+  if (jsonData == nil)
+    return;
+
+  id endpointUrl = jsonData[@"endpointUrl"];
+  self.uploadEndpointUrl = (endpointUrl == nil) ? [[NSURL alloc] initWithString:[endpointUrl stringValue]] : nil;
 }
 
 @end

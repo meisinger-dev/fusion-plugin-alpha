@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  id="cordova-plugin-fusion-bodymap" version="0.2.7">
+  id="cordova-plugin-fusion-bodymap" version="1.0.1">
   <name>FusionBodyMap</name>
   <description>Fusionetic Plugin</description>
   <license>MIT</license>
@@ -50,6 +50,7 @@
     <framework src="Foundation.framework" />
     <framework src="MobileCoreServices.framework" />
     <framework src="QuartzCore.framework" />
+    <framework src="MaterialComponents" type="podspec" spec="~> 19.0.2" />
 
     <preference name="CAMERA_USAGE_DESCRIPTION" default="" />
     <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
