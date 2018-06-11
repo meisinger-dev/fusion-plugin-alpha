@@ -34,13 +34,7 @@
     initializedSeekbar = YES;
     __weak id weakSelf = self;
 
-    // id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-    // if (exerciseVideoUrl != nil) {
-
-    // } else {
-
-    // }
-
+    id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
     [self.slider setHidden:(exerciseVideoUrl == nil)];
     [self.playbackButton setSelected:(exerciseVideoUrl != nil)];
     [self.playbackButton setHidden:NO];
