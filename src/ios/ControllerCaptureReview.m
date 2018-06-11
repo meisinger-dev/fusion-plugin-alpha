@@ -183,13 +183,10 @@
   [player setRate:0.f];
 
   id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl != nil) {
-    [self.captureInfoView setHidden:NO];
+  if (exerciseVideoUrl != nil)
     [self.takeButton setHidden:NO];
-  } else {
-    [self.saveInfoView setHidden:NO];
+  else
     [self.saveButton setHidden:NO];
-  }
   
   [self.playbackButton setSelected:NO];
 }
@@ -219,10 +216,9 @@
   [item seekToTime:kCMTimeZero];
 
   id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl == nil) {
+  if (exerciseVideoUrl == nil)
     [self.saveButton setHidden:NO];
-    [self.saveInfoView setHidden:NO];
-  } else {
+  else {
     [self.takeButton setHidden:NO];
     [self.captureInfoView setHidden:NO];
   }
@@ -261,10 +257,6 @@
           loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(loadingFinishFired:) userInfo:nil repeats:NO];
         } else
           [self loadingFinishFired:nil];
-        // [self unloadWaiting];
-        // [self initSeekbar];
-        // if (exerciseVideoUrl != nil)
-        //   [[self.moviePlayer player] play];
         return;
       }
 
@@ -535,14 +527,12 @@
   [self initSeekbar];
 
   id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl != nil) {
-    [self.saveInfoView setHidden:YES];
-    [self.captureInfoView setHidden:NO];
-    
+  if (exerciseVideoUrl != nil)
     [self.moviePlayer.player play];
-  } else {
+  else {
     [self.saveInfoView setHidden:NO];
-    [self.captureInfoView setHidden:YES];
+    [self.saveButton setHidden:NO];
+    [self.retakeButton setHidden:NO];
   }
 }
 
