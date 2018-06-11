@@ -34,7 +34,13 @@
     initializedSeekbar = YES;
     __weak id weakSelf = self;
 
-    id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
+    // id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
+    // if (exerciseVideoUrl != nil) {
+
+    // } else {
+
+    // }
+
     [self.slider setHidden:(exerciseVideoUrl == nil)];
     [self.playbackButton setSelected:(exerciseVideoUrl != nil)];
     [self.playbackButton setHidden:NO];
@@ -139,19 +145,24 @@
 
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent *)event {
   id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-
-  if ([self.playbackButton isSelected]) {
-    [self.captureInfoView setHidden:!(exerciseVideoUrl != nil)];
-    [self.saveInfoView setHidden:!(exerciseVideoUrl == nil)];
-    [self.moviePlayer.player pause];
-  } else {
-    [self.captureInfoView setHidden:YES];
-    [self.saveInfoView setHidden:YES];
-    [self.moviePlayer.player play];
-  }
+  [self.captureInfoView setHidden:YES];
+  [self.saveInfoView setHidden:YES];
+  [self.saveButton setHidden:YES];
+  [self.takeButton setHidden:YES];
   
-  [self.takeButton setHidden:(![self.playbackButton isSelected] && exerciseVideoUrl != nil)];
-  [self.saveButton setHidden:(![self.playbackButton isSelected] && exerciseVideoUrl == nil)];
+  if ([self.playbackButton isSelected]) {
+    if (exerciseVideoUrl != nil) {
+      [self.captureInfoView setHidden:NO];
+      [self.takeButton setHidden:NO];
+    } else {
+      [self.saveInfoView setHidden:NO];
+      [self.saveButton setHidden:NO];
+    }
+
+    [self.moviePlayer.player pause];
+  } else
+    [self.moviePlayer.player play];
+
   [self.playbackButton setSelected:![self.playbackButton isSelected]];
 }
 
@@ -176,14 +187,24 @@
 -(IBAction) seekbarPause:(id)sender forEvent:(UIEvent *)event {
   AVPlayer* player = self.moviePlayer.player;
   [player setRate:0.f];
+
+  id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
+  if (exerciseVideoUrl != nil) {
+    [self.captureInfoView setHidden:NO];
+    [self.takeButton setHidden:NO];
+  } else {
+    [self.saveInfoView setHidden:NO];
+    [self.saveButton setHidden:NO];
+  }
   
-  [self.takeButton setHidden:NO];
   [self.playbackButton setSelected:NO];
 }
 
 -(void) retakePicture:(UIViewController *)child {
   [[self.captureInfoView layer] setHidden:NO];
   [[self.saveInfoView layer] setHidden:YES];
+  [self.saveButton setHidden:YES];
+  [self.takeButton setHidden:NO];
 
   CGFloat point = CGRectGetWidth(child.view.frame);
   CGRect frame = child.view.bounds;
@@ -485,6 +506,12 @@
 -(void) continueToMarkExercise {
   [self unloadDecisionModal];
   [self unloadWaitCover];
+
+  [self.captureInfoView setHidden:YES];
+  [self.saveInfoView setHidden:YES];
+  [self.saveButton setHidden:YES];
+  [self.takeButton setHidden:YES];
+  [self.retakeButton setHidden:YES];
   
   [self initSeekbar];
   [self.moviePlayer.player play];
@@ -515,8 +542,15 @@
   [self initSeekbar];
 
   id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl != nil)
+  if (exerciseVideoUrl != nil) {
+    [self.saveInfoView setHidden:YES];
+    [self.captureInfoView setHidden:NO];
+    
     [self.moviePlayer.player play];
+  } else {
+    [self.saveInfoView setHidden:NO];
+    [self.captureInfoView setHidden:YES];
+  }
 }
 
 -(void) uploadingFinishFired:(NSTimer *)timer {
@@ -526,6 +560,8 @@
     loadingTimer = nil;
     
     [[self.plugin exercise] setVideoUrl:[self.plugin currentVideoUrl]];
+    [self.captureInfoView setHidden:YES];
+    [self.saveInfoView setHidden:YES];
     [self.saveButton setHidden:YES];
     [self.takeButton setHidden:YES];
     [self.retakeButton setHidden:YES];
@@ -569,13 +605,12 @@
     [self.playerView setBackgroundColor:UIColor.blackColor];
     [self.playerView addSubview:self.moviePlayer.view];
     
-    id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-    if (exerciseVideoUrl != nil) {
-      [self.saveButton setHidden:YES];
-      [self.saveInfoView setHidden:YES];
-    }
-    
+    [self.slider setHidden:YES];
+    [self.saveInfoView setHidden:YES];
+    [self.captureInfoView setHidden:YES];
+    [self.saveButton setHidden:YES];
     [self.takeButton setHidden:YES];
+    [self.retakeButton setHidden:YES];
     [self.playbackButton setSelected:YES];
   });
 }
