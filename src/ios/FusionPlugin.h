@@ -13,6 +13,8 @@
 @property (strong, atomic) FusionExercise* exercise;
 @property (strong, atomic) NSURL* currentVideoUrl;
 @property (strong, atomic) NSURL* uploadEndpointUrl;
+@property (strong, atomic) NSString* apiAuthorize;
+@property (strong, atomic) NSString* apiVersion;
 
 -(void) takeVideo:(CDVInvokedUrlCommand*)command;
 -(void) playVideo:(CDVInvokedUrlCommand*)command;

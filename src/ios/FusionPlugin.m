@@ -86,6 +86,13 @@
 
   id endpointUrl = jsonData[@"endpointUrl"];
   self.uploadEndpointUrl = (endpointUrl != nil) ? [[NSURL alloc] initWithString:endpointUrl] : nil;
+
+  NSDictionary* headers = jsonData[@"headers"];
+  if (headers == nil)
+    return;
+
+  self.apiVersion = headers[@"X-Api-Version"];
+  self.apiAuthorize = headers[@"Authorization"];
 }
 
 @end

@@ -75,6 +75,10 @@
     
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:[self.plugin uploadEndpointUrl] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:300];
     [request setHTTPMethod:@"POST"];
+    if ([self.plugin apiVersion])
+      [request setValue:[self.plugin apiVersion] forHTTPHeaderField:@"X-Api-Version"];
+    if ([self.plugin apiAuthorize])
+      [request setValue:[self.plugin apiAuthorize] forHTTPHeaderField:@"Authorization"];
     [request setValue:payloadLength forHTTPHeaderField:@"Content-Length"];
     [request setValue:@"multipart/form-data; boundary=FfD04x" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPBody:payload];
