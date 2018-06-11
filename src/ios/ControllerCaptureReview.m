@@ -259,13 +259,12 @@
           [waitIndicator setProgress:100];
           [waitLabel setText:@"100"];
           loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(loadingFinishFired:) userInfo:nil repeats:NO];
-          return;
-        }
-
-        [self unloadWaiting];
-        [self initSeekbar];
-        if (exerciseVideoUrl != nil)
-          [[self.moviePlayer player] play];
+        } else
+          [self loadingFinishFired:nil];
+        // [self unloadWaiting];
+        // [self initSeekbar];
+        // if (exerciseVideoUrl != nil)
+        //   [[self.moviePlayer player] play];
         return;
       }
 
