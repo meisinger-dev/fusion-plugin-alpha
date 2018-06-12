@@ -72,8 +72,8 @@
     return;
 
   id videoUrl = jsonData[@"videoUrl"];
-  self.currentVideoUrl = (videoUrl != nil) ? [[NSURL alloc] initWithString:videoUrl] : nil;
-  self.exercise = [[FusionExercise alloc] initWithData:jsonData[@"name"]];
+  [self setCurrentVideoUrl:(videoUrl != nil) ? [[NSURL alloc] initWithString:videoUrl] : nil];
+  [self setExercise:[[FusionExercise alloc] initWithData:jsonData]];
 }
 
 -(void) identifySettings:(NSString *)json {
@@ -85,14 +85,14 @@
     return;
 
   id endpointUrl = jsonData[@"endpointUrl"];
-  self.uploadEndpointUrl = (endpointUrl != nil) ? [[NSURL alloc] initWithString:endpointUrl] : nil;
+  [self setUploadEndpointUrl:(endpointUrl != nil) ? [[NSURL alloc] initWithString:endpointUrl] : nil];
 
   NSDictionary* headers = jsonData[@"headers"];
   if (headers == nil)
     return;
 
-  self.apiVersion = headers[@"X-Api-Version"];
-  self.apiAuthorize = headers[@"Authorization"];
+  [self setApiVersion:headers[@"X-Api-Version"]];
+  [self setApiAuthorize:headers[@"Authorization"]];
 }
 
 @end

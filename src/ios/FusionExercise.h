@@ -3,11 +3,19 @@
 
 @interface FusionExercise : NSObject {}
 
-@property (assign, nullable) NSString* name;
-@property (assign, nullable) NSString* instructions;
-@property (assign, nullable) NSURL* instructionsUrl;
-@property (assign, nullable) NSURL* videoUrl;
+@property (nullable) NSNumber* testId;
+@property (nullable) NSNumber* testTypeId;
+@property (nullable) NSString* uniqueId;
+@property (nullable) NSString* version;
+@property (nullable) NSNumber* viewId;
+@property (nullable) NSNumber* exerciseId;
+@property (nullable) NSNumber* bodySideId;
+@property (nullable) NSString* name;
+@property (nullable) NSString* filePrefix;
+@property (nullable) NSString* instructions;
+@property (nullable) NSURL* instructionsUrl;
+@property (nullable) NSURL* videoUrl;
 
--(id)initWithData:(NSString*)name_;
+-(nonnull id)initWithData:(NSDictionary*_Nullable)data;
 
 @end

@@ -15,12 +15,12 @@
   AVCaptureVideoDataOutput* videoOutput;
 }
 
-@property (strong, nonatomic) AVAssetWriter* writer;
-@property (strong, nonatomic) AVAssetWriterInput* input;
-@property (strong, nonatomic) AVCaptureDevice* device;
-@property (strong, nonatomic) AVCaptureSession* session;
-@property (strong, nonatomic) AVCaptureVideoPreviewLayer* preview;
-@property (strong, nonatomic) id<CaptureOutputDelegate> delegate;
+@property AVAssetWriter* writer;
+@property AVAssetWriterInput* input;
+@property AVCaptureDevice* device;
+@property AVCaptureSession* session;
+@property AVCaptureVideoPreviewLayer* preview;
+@property id<CaptureOutputDelegate> delegate;
 
 -(id) initWithDelegate:(id<CaptureOutputDelegate>) delegate;
 -(void) captureSetup:(NSError **)setupError;

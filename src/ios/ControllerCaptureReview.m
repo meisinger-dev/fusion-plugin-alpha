@@ -68,11 +68,24 @@
   [self ensureWaitCover];
   [self ensureWaitIndicator];
 
+  NSString* boundary = @"FfD04x";
+  FusionExercise* exercise = [self.plugin exercise];
+
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
     NSData* file = [NSData dataWithContentsOfURL:[self.plugin currentVideoUrl]];
-    NSData* payload = [self generateFileUploadData:file];
+    NSData* payload = [self generateFileUploadData:boundary data:file parameters:@{
+      @"filename": [NSString stringWithFormat:@"%@-video.mp4", [exercise filePrefix]],
+      @"testId": [exercise testId],
+      @"testTypeId": [exercise testTypeId],
+      @"uniqueId": [exercise uniqueId],
+      @"version": [exercise version],
+      @"viewId": [exercise viewId],
+      @"exerciseId": [exercise exerciseId],
+      @"bodySideId": [exercise bodySideId],
+      @"exerciseName": [exercise name]
+    }];
+
     NSString* payloadLength = [NSString stringWithFormat:@"%lu", (unsigned long)[payload length]];
-    
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:[self.plugin uploadEndpointUrl] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:300];
     [request setHTTPMethod:@"POST"];
     if ([self.plugin apiVersion])
@@ -80,7 +93,7 @@
     if ([self.plugin apiAuthorize])
       [request setValue:[self.plugin apiAuthorize] forHTTPHeaderField:@"Authorization"];
     [request setValue:payloadLength forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"multipart/form-data; boundary=FfD04x" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary] forHTTPHeaderField:@"Content-Type"];
     [request setHTTPBody:payload];
     
     NSURLSessionConfiguration* configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
@@ -470,14 +483,24 @@
   decisionModal = nil;
 }
 
--(NSData *) generateFileUploadData:(NSData *)data {
-  NSString* headerString = [NSString stringWithCString:"--FfD04x\r\nContent-Disposition: form-data; name=\"upload[file]\"; filename=\"video-file-name\"\r\nContent-Type: application/octet-stream\r\nContent-Transfer-Encoding: binary\r\n\r\n" encoding:NSASCIIStringEncoding];
-
-  NSData* header = [headerString dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-  NSMutableData* payload = [[NSMutableData alloc] initWithLength:[header length]];
-  [payload setData:header];
+-(NSData *) generateFileUploadData:(NSString *)boundary data:(NSData *)data parameters:(NSDictionary *)parameters {
+  
+  NSMutableData* payload = [NSMutableData alloc];
+  [parameters enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSString* value, BOOL* stop) {
+    if (![key isEqual:@"filename"]) {
+      [payload appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+      [payload appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+      [payload appendData:[[NSString stringWithFormat:@"%@\r\n", value] dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+  }];
+  
+  [payload appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+  [payload appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"upload[file]\"; filename=\"%@\"\r\n", parameters[@"filename"]] dataUsingEncoding:NSUTF8StringEncoding]];
+  [payload appendData:[@"Content-Type: application/octet-stream\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+  [payload appendData:[@"Content-Transfer-Encoding: binary\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
   [payload appendData:data];
-  [payload appendData:[@"\r\n--FfD04x--" dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+  [payload appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+  [payload appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
   return payload;
 }
 

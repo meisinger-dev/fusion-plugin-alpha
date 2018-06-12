@@ -9,12 +9,12 @@
   BOOL hasPendingOperation;
 }
 
-@property (strong, nonatomic) CDVInvokedUrlCommand* command;
-@property (strong, atomic) FusionExercise* exercise;
-@property (strong, atomic) NSURL* currentVideoUrl;
-@property (strong, atomic) NSURL* uploadEndpointUrl;
-@property (strong, atomic) NSString* apiAuthorize;
-@property (strong, atomic) NSString* apiVersion;
+@property (nonatomic) CDVInvokedUrlCommand* command;
+@property FusionExercise* exercise;
+@property NSURL* currentVideoUrl;
+@property NSURL* uploadEndpointUrl;
+@property NSString* apiAuthorize;
+@property NSString* apiVersion;
 
 -(void) takeVideo:(CDVInvokedUrlCommand*)command;
 -(void) playVideo:(CDVInvokedUrlCommand*)command;

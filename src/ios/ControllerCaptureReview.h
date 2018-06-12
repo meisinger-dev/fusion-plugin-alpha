@@ -18,8 +18,8 @@
 @property (weak, nonatomic) IBOutlet UIButton* saveButton;
 @property (weak, nonatomic) IBOutlet UIButton* retakeButton;
 @property (weak, nonatomic) IBOutlet UIButton* playbackButton;
-@property (strong, nonatomic) AVPlayerViewController* moviePlayer;
-@property (strong, nonatomic) FusionPlugin* plugin;
+@property AVPlayerViewController* moviePlayer;
+@property FusionPlugin* plugin;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) takePicture:(id)sender forEvent:(UIEvent*)event;
