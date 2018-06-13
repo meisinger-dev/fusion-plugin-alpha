@@ -487,13 +487,10 @@
   
   NSMutableData* payload = [NSMutableData alloc];
   [parameters enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSObject* value, BOOL* stop) {
-    if (![key isEqual:@"filename"]) {
+    if (![key isEqual:@"filename"] && value && ![value isEqual:[NSNull null]]) {
       [payload appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
       [payload appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
-      if (value && value != nil)
-        [payload appendData:[[NSString stringWithFormat:@"%@\r\n", value] dataUsingEncoding:NSUTF8StringEncoding]];
-      else
-        [payload appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+      [payload appendData:[[NSString stringWithFormat:@"%@\r\n", value] dataUsingEncoding:NSUTF8StringEncoding]];
     }
   }];
   

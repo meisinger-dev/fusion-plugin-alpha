@@ -8,15 +8,15 @@
 -(id)initWithData:(NSDictionary *)data {
   self = [super init];
   if (self) {
-    self.testId = data[@"testId"];
-    self.testTypeId = data[@"testTypeId"];
-    self.uniqueId = data[@"uniqueId"];
-    self.version = data[@"version"];
-    self.viewId = data[@"viewId"];
-    self.exerciseId = data[@"exerciseId"];
-    self.bodySideId = data[@"bodySideId"];
-    self.name = data[@"name"];
-    self.filePrefix = data[@"filePrefix"];
+    self.testId = data[@"testId"] ? data[@"testId"] : [NSNull null];
+    self.testTypeId = data[@"testTypeId"] ? data[@"testTypeId"] : [NSNull null];
+    self.uniqueId = data[@"uniqueId"] ? data[@"uniqueId"] : [NSNull null];
+    self.version = data[@"version"] ? data[@"version"] : [NSNull null];
+    self.viewId = data[@"viewId"] ? data[@"viewId"] : [NSNull null];
+    self.exerciseId = data[@"exerciseId"] ? data[@"exerciseId"] : [NSNull null];
+    self.bodySideId = data[@"bodySideId"] ? data[@"bodySideId"] : [NSNull null];
+    self.name = data[@"name"] ? data[@"name"] : [NSNull null];
+    self.filePrefix = data[@"filePrefix"] ? data[@"filePrefix"] : [NSNull null];
   }
   
   return self;
