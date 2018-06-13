@@ -17,6 +17,7 @@
     self.bodySideId = data[@"bodySideId"] ? data[@"bodySideId"] : [NSNull null];
     self.name = data[@"name"] ? data[@"name"] : [NSNull null];
     self.filePrefix = data[@"filePrefix"] ? data[@"filePrefix"] : [NSNull null];
+    self.videoUrl = data[@"videoUrl"] ? data[@"videoUrl"] : [NSNull null];
   }
   
   return self;
