@@ -316,7 +316,7 @@
   if (error != nil)
     NSLog(@"Error parsing json data from server!");
   
-  id remaining = json[@"hasExercisesRemaining"];
+  id remaining = json[@"HaveAllVideos"];
   hasExercisesRemaining = remaining ? [remaining boolValue] : NO;
   
   dispatch_async(dispatch_get_main_queue(), ^(void) {

@@ -1,6 +1,6 @@
 {
   "name": "fusion-plugin-alpha",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "fusionetics ios plugin",
   "main": "index.js",
   "scripts": {

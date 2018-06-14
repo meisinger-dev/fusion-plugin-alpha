@@ -15,10 +15,6 @@ FusioneticsPlugin.prototype.captureVideo = function (cbSuccess, cbError, options
   if (options.settings && options.settings !== null)
     settings = JSON.stringify(options.settings);
 
-  console.log('capture video called!');
-  console.log('exercise -> ', exercise);
-  console.log('settings -> ', settings);
-
   cordova.exec(cbLifted, cbError,
     'FusionBodyMap', 'takeVideo', [exercise, settings]);
 };
@@ -32,9 +28,6 @@ FusioneticsPlugin.prototype.captureImage = function (cbSuccess, cbError, options
   var exercise = undefined;
   if (options.exercise && options.exercise !== null)
     exercise = JSON.stringify(options.exercise);
-
-  console.log('capture image called!');
-  console.log('exercise -> ', exercise);
 
   cordova.exec(cbLifted, cbError,
     'FusionBodyMap', 'playVideo', [exercise]);
