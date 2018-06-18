@@ -40,7 +40,7 @@
     [self.playbackButton setHidden:NO];
     
     CGFloat seekbarWidth = CGRectGetWidth([self.slider bounds]);
-    double interval = (0.5f * (seconds / seekbarWidth));
+    double interval = (0.5 * (seconds / seekbarWidth));
     
     CMTime seekbarSeconds = CMTimeMakeWithSeconds(interval, NSEC_PER_SEC);
     seekbarObserver = [player addPeriodicTimeObserverForInterval:seekbarSeconds queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
@@ -99,7 +99,62 @@
     NSURLSessionConfiguration* configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
     NSURLSession* session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:NSOperationQueue.mainQueue];
     
-    NSURLSessionTask* task = [session dataTaskWithRequest:request];
+    NSURLSessionTask* task = [session dataTaskWithRequest:request completionHandler:^(NSData* data, NSURLResponse* response, NSError* error) {
+      if (error.code != noErr) {
+        if (error.code == NSURLErrorTimedOut) {
+          alertController = [UIAlertController alertControllerWithTitle:@"Video Upload Timeout" message:@"Video is taking too long to upload. This may be due to a slow or low bandwidth connection. Check your connection and try again later." preferredStyle:UIAlertControllerStyleAlert];
+          [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+            [self.plugin failed:@"Video upload timed out"];
+          }]];
+
+          [self presentViewController:alertController animated:YES completion:nil];
+        } else {
+          alertController = [UIAlertController alertControllerWithTitle:@"Video Upload Failed" message:@"Unable to make request at this time. Please check your connection and try again later." preferredStyle:UIAlertControllerStyleAlert];
+          [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+            [self.plugin failed:@"Video upload request failed"];
+          }]];
+
+          [self presentViewController:alertController animated:YES completion:nil];
+        }
+        return;
+      }
+
+      NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+      NSInteger statusCode = [httpResponse statusCode];
+      if (statusCode >= 200 && statusCode < 300) {
+        NSError* jsonError = nil;
+        NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
+        if (jsonError.code != noErr) {
+          alertController = [UIAlertController alertControllerWithTitle:@"Video Upload was Rejected" message:@"An invalid response was received while the video was being uploaded. Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+          [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+            [self.plugin failed:@"Video upload invalid response"];
+          }]];
+
+          [self presentViewController:alertController animated:YES completion:nil];
+        }
+
+        id haveAllVideos = json[@"HaveAllVideos"];
+        hasExercisesRemaining = haveAllVideos ? ![haveAllVideos boolValue] : NO;
+
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+          if (waitIndicator && waitIndicator.isAnimating) {
+            [waitIndicator setProgress:1.0];
+            [waitLabel setText:@"100%"];
+            loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(uploadingFinishFired:) userInfo:nil repeats:NO];
+          } else
+            [self uploadingFinishFired:nil];
+        });
+
+        return;
+      }
+
+      alertController = [UIAlertController alertControllerWithTitle:@"Video Upload was Rejected" message:@"Videos are not being accepted at this time. Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+      [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+        [self.plugin failed:@"Video upload rejected"];
+      }]];
+
+      [self presentViewController:alertController animated:YES completion:nil];
+    }];
     [task resume];
   });
 }
@@ -135,14 +190,14 @@
   CGImageRelease(imageRef);
   AudioServicesPlaySystemSound(1108);
   
-  ControllerImagePreview* review = [[ControllerImagePreview alloc] initWithNibName:@"ControllerImagePreview" bundle:nil];
-  [review setPlugin:self.plugin];
-  [review setMovieTime:[NSNumber numberWithFloat:CMTimeGetSeconds(currentTime)]];
-  [review setMovieImage:image];
+  ControllerImagePreview* previewController = [[ControllerImagePreview alloc] initWithNibName:@"ControllerImagePreview" bundle:nil];
+  [previewController setPlugin:self.plugin];
+  [previewController setMovieTime:[NSNumber numberWithFloat:CMTimeGetSeconds(currentTime)]];
+  [previewController setMovieImage:image];
   
-  [self addChildViewController:review];
-  [self.view addSubview:review.view];
-  [review didMoveToParentViewController:self];
+  [self addChildViewController:previewController];
+  [self.view addSubview:previewController.view];
+  [previewController didMoveToParentViewController:self];
   
   CGFloat point = CGRectGetWidth(self.view.frame);
   CGRect frame = self.view.bounds;
@@ -150,8 +205,8 @@
   frame.size.width = self.view.frame.size.width;
   frame.size.height = self.view.frame.size.height;
   
-  review.view.frame = frame;
-  [UIView animateWithDuration:0.25f animations:^{review.view.frame = self.view.bounds;}];
+  previewController.view.frame = frame;
+  [UIView animateWithDuration:0.25f animations:^{previewController.view.frame = self.view.bounds;}];
 }
 
 -(IBAction) togglePlayback:(id)sender forEvent:(UIEvent *)event {
@@ -249,6 +304,16 @@
   AVPlayerItem* playerItem = [player currentItem];
 
   if (object == player && [keyPath isEqualToString:@"status"]) {
+    if (player.status == AVPlayerStatusFailed) {
+      alertController = [UIAlertController alertControllerWithTitle:@"Unable to Retrieve Video" message:@"The selected video has failed to load. Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+      [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+        [self.plugin failed:@"Unable to retrieve video"];
+      }]];
+      
+      [self presentViewController:alertController animated:YES completion:nil];
+      return;
+    }
+
     if (exerciseVideoUrl != nil)
       [self ensureWaitCover];
   }
@@ -269,8 +334,8 @@
 
       if (durationSeconds == rangeSeconds) {
         if ((waitIndicator && waitLabel) && waitIndicator.isAnimating) {
-          [waitIndicator setProgress:100];
-          [waitLabel setText:@"100"];
+          [waitIndicator setProgress:1.0];
+          [waitLabel setText:@"100%"];
           loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(loadingFinishFired:) userInfo:nil repeats:NO];
         } else
           [self loadingFinishFired:nil];
@@ -291,39 +356,17 @@
 
 -(void) URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
   dispatch_async(dispatch_get_main_queue(), ^(void) {
-    if (totalBytesSent == totalBytesExpectedToSend) {
-      if ((waitIndicator && waitLabel) && waitIndicator.isAnimating) {
-        [waitIndicator setProgress:100.0f];
-        [waitLabel setText:@"100%"];
-      }
-      return;
-    }
-    
     if (waitIndicator && waitLabel) {
       float percentage = ((float)totalBytesSent/(float)totalBytesExpectedToSend);
+      if (percentage > 0.98)
+        percentage = 0.99;
+
       [waitIndicator setProgress:percentage];
       [waitLabel setText:[NSString stringWithFormat:@"%d%%", (int)(percentage * 100)]];
       
       if (!waitIndicator.isAnimating)
         [waitIndicator startAnimating];
     }
-  });
-}
-
--(void) URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-  NSError* error = nil;
-  NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-  if (error != nil)
-    NSLog(@"Error parsing json data from server!");
-  
-  id remaining = json[@"HaveAllVideos"];
-  hasExercisesRemaining = remaining ? [remaining boolValue] : NO;
-  
-  dispatch_async(dispatch_get_main_queue(), ^(void) {
-    if (waitIndicator && waitIndicator.isAnimating)
-      loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(uploadingFinishFired:) userInfo:nil repeats:NO];
-    else
-      [self uploadingFinishFired:nil];
   });
 }
 
@@ -484,7 +527,6 @@
 }
 
 -(NSData *) generateFileUploadData:(NSString *)boundary data:(NSData *)data parameters:(NSDictionary *)parameters {
-  
   NSMutableData* payload = [NSMutableData alloc];
   [parameters enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSObject* value, BOOL* stop) {
     if (![key isEqual:@"filename"] && value && ![value isEqual:[NSNull null]]) {
@@ -538,7 +580,7 @@
   [self ensureWaitIndicator];
   
   if (!waitIndicator.isAnimating) {
-    [waitIndicator setProgress:0.0f];
+    [waitIndicator setProgress:0.0];
     [waitIndicator startAnimating];
     [waitLabel setHidden:NO];
     [waitLabel setText:@"0%"];
@@ -585,8 +627,11 @@
   [super viewDidLoad];
   [[self.captureInfoView layer] setCornerRadius:8];
   [[self.saveInfoView layer] setCornerRadius:8];
+
+  if ([self.plugin currentVideoUrl] == nil)
+    return;
+
   loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(loadingBeginFired:) userInfo:nil repeats:NO];
-  
   AVPlayer* player = [AVPlayer playerWithURL:[self.plugin currentVideoUrl]];
   AVPlayerItem* playerItem = [player currentItem];
   player.automaticallyWaitsToMinimizeStalling = YES;
@@ -622,6 +667,15 @@
     [self.takeButton setHidden:YES];
     [self.retakeButton setHidden:YES];
     [self.playbackButton setSelected:YES];
+
+    if ([self.plugin currentVideoUrl] == nil) {
+      alertController = [UIAlertController alertControllerWithTitle:@"Invalid Video" message:@"The selected video is either corrupt or missing." preferredStyle:UIAlertControllerStyleAlert];
+      [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+        [self.plugin failed:@"Invalid video"];
+      }]];
+
+      [self presentViewController:alertController animated:YES completion:nil];
+    }
   });
 }
 
