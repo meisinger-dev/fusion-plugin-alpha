@@ -318,7 +318,22 @@
       [self ensureWaitCover];
   }
 
+  if (object == playerItem && [keyPath isEqualToString:@"status"]) {
+    if (playerItem.status == AVPlayerItemStatusFailed) {
+      alertController = [UIAlertController alertControllerWithTitle:@"Unable to Retrieve Video" message:@"The selected video has failed to load. Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+      [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+        [self.plugin failed:@"Unable to retrieve video"];
+      }]];
+      
+      [self presentViewController:alertController animated:YES completion:nil];
+      return;
+    }
+  }
+
   if (object == playerItem && [keyPath isEqualToString:@"loadedTimeRanges"] && !initializedSeekbar) {
+    if (playerItem.status == AVPlayerItemStatusFailed)
+      return;
+    
     NSArray* ranges = (NSArray *)[change objectForKey:NSKeyValueChangeNewKey];
     if (ranges && [ranges count]) {
       if (loadingTimer) {
