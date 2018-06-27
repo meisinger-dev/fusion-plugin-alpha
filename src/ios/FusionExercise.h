@@ -12,8 +12,6 @@
 @property (nullable) NSNumber* bodySideId;
 @property (nullable) NSString* name;
 @property (nullable) NSString* filePrefix;
-@property (nullable) NSString* instructions;
-@property (nullable) NSURL* instructionsUrl;
 @property (nullable) NSURL* videoUrl;
 
 -(nonnull id)initWithData:(NSDictionary*_Nullable)data;

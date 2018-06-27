@@ -10,6 +10,7 @@
   MDCActivityIndicator* waitIndicator;
   UILabel* waitLabel;
   UIView* waitCover;
+  UIView* waitDescription;
   UIView* decisionModal;
   NSTimer* loadingTimer;
   BOOL initializedSeekbar;
@@ -67,6 +68,7 @@
 -(IBAction) saveVideo:(id)sender forEvent:(UIEvent *)event {
   [self ensureWaitCover];
   [self ensureWaitIndicator];
+  [self ensureWaitDescription:@"We are saving your video. This may take a moment based on your connection."];
 
   NSString* boundary = @"FfD04x";
   FusionExercise* exercise = [self.plugin exercise];
@@ -438,6 +440,37 @@
   [waitCover addSubview:waitLabel];
 }
 
+-(void) ensureWaitDescription:(NSString *)description {
+  if (waitDescription)
+    return;
+  
+  waitDescription = [[UIView alloc] initWithFrame:CGRectMake(16, 24, 380, 75)];
+  [waitDescription setBackgroundColor:UIColor.lightGrayColor];
+  [waitDescription setAutoresizingMask:(
+    UIViewAutoresizingFlexibleWidth |
+    UIViewAutoresizingFlexibleLeftMargin |
+    UIViewAutoresizingFlexibleRightMargin |
+    UIViewAutoresizingFlexibleTopMargin)];
+  [[waitDescription layer] setCornerRadius:8];
+  
+  UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(28, 17, 325, 40)];
+  [label setNumberOfLines:2];
+  [label setLineBreakMode:NSLineBreakByWordWrapping];
+  [label setTextAlignment:NSTextAlignmentCenter];
+  [label setContentMode:UIViewContentModeTop];
+  [label setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
+  [label setAdjustsFontSizeToFitWidth:NO];
+  [label setFont:[UIFont systemFontOfSize:16.0]];
+  [label setAutoresizingMask:(
+    UIViewAutoresizingFlexibleWidth |
+    UIViewAutoresizingFlexibleHeight)];
+  [label setText:description];
+  
+  [self ensureWaitCover];
+  [waitDescription addSubview:label];
+  [waitCover addSubview:waitDescription];
+}
+
 -(void) ensureDecisionModal {
   CGRect mainBounds = [[UIScreen mainScreen] bounds];
   CGSize mainSize = mainBounds.size;
@@ -532,6 +565,15 @@
   waitLabel = nil;
 }
 
+-(void) unloadWaitDescription {
+  if (!waitDescription)
+    return;
+  
+  [[waitDescription subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+  [waitDescription removeFromSuperview];
+  waitDescription = nil;
+}
+
 -(void) unloadDecisionModal {
   if (!decisionModal)
     return;
@@ -593,6 +635,7 @@
   
   [self ensureWaitCover];
   [self ensureWaitIndicator];
+  [self ensureWaitDescription:@"We are downloading your video. This may take a moment based on your connection."];
   
   if (!waitIndicator.isAnimating) {
     [waitIndicator setProgress:0.0];
@@ -607,6 +650,7 @@
     [loadingTimer invalidate];
   loadingTimer = nil;
   
+  [self unloadWaitDescription];
   [self unloadWaiting];
   [self initSeekbar];
 
@@ -633,6 +677,7 @@
     [self.takeButton setHidden:YES];
     [self.retakeButton setHidden:YES];
     
+    [self unloadWaitDescription];
     [self unloadWaitIndicator];
     [self ensureDecisionModal];
   });
