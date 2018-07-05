@@ -443,8 +443,11 @@
 -(void) ensureWaitDescription:(NSString *)description {
   if (waitDescription)
     return;
+
+  CGRect mainBounds = self.view.bounds;
+  CGSize mainSize = mainBounds.size;
   
-  waitDescription = [[UIView alloc] initWithFrame:CGRectMake(16, 24, 380, 75)];
+  waitDescription = [[UIView alloc] initWithFrame:CGRectMake(16, 24, mainSize.width - 32, 75)];
   [waitDescription setBackgroundColor:UIColor.lightGrayColor];
   [waitDescription setAutoresizingMask:(
     UIViewAutoresizingFlexibleWidth |
@@ -452,8 +455,11 @@
     UIViewAutoresizingFlexibleRightMargin |
     UIViewAutoresizingFlexibleTopMargin)];
   [[waitDescription layer] setCornerRadius:8];
+
+  CGRect viewBounds = waitDescription.bounds;
+  CGSize viewSize = viewBounds.size;
   
-  UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(28, 17, 325, 40)];
+  UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(28, 17, viewSize.width - 56, 40)];
   [label setNumberOfLines:2];
   [label setLineBreakMode:NSLineBreakByWordWrapping];
   [label setTextAlignment:NSTextAlignmentCenter];
