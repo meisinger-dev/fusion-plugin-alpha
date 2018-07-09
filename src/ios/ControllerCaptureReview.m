@@ -628,13 +628,13 @@
   [self unloadDecisionModal];
   [self unloadWaitCover];
 
-  [self.captureInfoView setHidden:YES];
   [self.saveInfoView setHidden:YES];
   [self.saveButton setHidden:YES];
   [self.takeButton setHidden:YES];
   [self.retakeButton setHidden:YES];
   
   [self initSeekbar];
+  [self.captureInfoView setHidden:NO];
   [self.moviePlayer.player play];
 }
 
@@ -665,9 +665,10 @@
   [self initSeekbar];
 
   id exerciseVideoUrl = [[self.plugin exercise] videoUrl];
-  if (exerciseVideoUrl != nil)
+  if (exerciseVideoUrl != nil) {
+    [self.captureInfoView setHidden:NO];
     [self.moviePlayer.player play];
-  else {
+  } else {
     [self.saveInfoView setHidden:NO];
     [self.saveButton setHidden:NO];
     [self.retakeButton setHidden:NO];
