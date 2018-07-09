@@ -101,7 +101,7 @@
                     <rect key="frame" x="16" y="24" width="380" height="75"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Use the tool bar to capture an image of the subject at the bottom of their squat" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5T2-CE-y8B">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Use the tool bar to capture an image of the subject at the bottom of their squat" textAlignment="center" lineBreakMode="truncateTail" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="YES" minimumScaleFactor="0.4" translatesAutoresizingMaskIntoConstraints="NO" id="5T2-CE-y8B">
                             <rect key="frame" x="28" y="17" width="325" height="40"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -120,7 +120,7 @@
                     <rect key="frame" x="16" y="24" width="380" height="75"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Review the captured video prior to uploading" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="csi-KY-wGJ">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Review and Save your video. Retake to record a new one." textAlignment="center" lineBreakMode="truncateTail" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="YES" minimumScaleFactor="0.4" translatesAutoresizingMaskIntoConstraints="NO" id="csi-KY-wGJ">
                             <rect key="frame" x="28" y="17" width="325" height="40"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>

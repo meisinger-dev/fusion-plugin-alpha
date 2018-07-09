@@ -34,12 +34,16 @@
   [result setCancelled:YES];
 
   [self captured:result];
+  [self removeTempFiles];
+  hasPendingOperation = NO;
 }
 
 -(void) failed:(NSString *)message {
   [self.commandDelegate sendPluginResult:[CDVPluginResult 
     resultWithStatus:CDVCommandStatus_ERROR
     messageAsString:message] callbackId:self.command.callbackId];
+
+  [self removeTempFiles];
 
   hasPendingOperation = NO;
   [self.viewController dismissViewControllerAnimated:YES completion:nil];
@@ -58,6 +62,8 @@
       resultWithStatus:CDVCommandStatus_OK
       messageAsString:message] callbackId:self.command.callbackId];
   }
+
+  [self removeTempFiles];
 
   hasPendingOperation = NO;
   [self.viewController dismissViewControllerAnimated:YES completion:nil];
@@ -93,6 +99,16 @@
 
   [self setApiVersion:headers[@"X-Api-Version"]];
   [self setApiAuthorize:headers[@"Authorization"]];
+}
+
+-(void) removeTempFiles {
+  NSString* directory = NSTemporaryDirectory();
+  NSArray* collection = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directory error:NULL];
+  for (NSString* fileName in collection) {
+    [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", directory, fileName] error:NULL];
+  }
+
+  [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 @end

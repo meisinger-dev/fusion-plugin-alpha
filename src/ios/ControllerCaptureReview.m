@@ -449,6 +449,7 @@
   
   waitDescription = [[UIView alloc] initWithFrame:CGRectMake(16, 24, mainSize.width - 32, 75)];
   [waitDescription setBackgroundColor:UIColor.lightGrayColor];
+  [waitDescription setContentMode:UIViewContentModeScaleToFill];
   [waitDescription setAutoresizingMask:(
     UIViewAutoresizingFlexibleWidth |
     UIViewAutoresizingFlexibleLeftMargin |
@@ -459,13 +460,16 @@
   CGRect viewBounds = waitDescription.bounds;
   CGSize viewSize = viewBounds.size;
   
-  UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(28, 17, viewSize.width - 56, 40)];
+  UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(10, 17, viewSize.width - 20, 40)];
   [label setNumberOfLines:2];
-  [label setLineBreakMode:NSLineBreakByWordWrapping];
+  [label setLineBreakMode:NSLineBreakByTruncatingTail];
   [label setTextAlignment:NSTextAlignmentCenter];
   [label setContentMode:UIViewContentModeTop];
   [label setBaselineAdjustment:UIBaselineAdjustmentAlignBaselines];
-  [label setAdjustsFontSizeToFitWidth:NO];
+  [label setContentHuggingPriority:(UILayoutPriorityDefaultHigh + 1) forAxis:UILayoutConstraintAxisHorizontal];
+  [label setContentHuggingPriority:(UILayoutPriorityDefaultHigh + 1) forAxis:UILayoutConstraintAxisVertical];
+  [label setAdjustsFontSizeToFitWidth:YES];
+  [label setMinimumScaleFactor:0.4];
   [label setFont:[UIFont systemFontOfSize:16.0]];
   [label setAutoresizingMask:(
     UIViewAutoresizingFlexibleWidth |
