@@ -67,7 +67,7 @@
     }
 
     recordingDate = [NSDate date];
-    recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/30.0 target:self selector:@selector(recordingTimerFired:) userInfo:nil repeats:NO];
+    recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/30.0 target:self selector:@selector(recordingTimerFired:) userInfo:nil repeats:YES];
     AudioServicesPlaySystemSound(1113);
   }
   
