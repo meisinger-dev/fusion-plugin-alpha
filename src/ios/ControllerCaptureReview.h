@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* saveButton;
 @property (weak, nonatomic) IBOutlet UIButton* retakeButton;
 @property (weak, nonatomic) IBOutlet UIButton* playbackButton;
+@property (weak, nonatomic) IBOutlet UILabel* timerLabel;
 @property AVPlayerViewController* moviePlayer;
 @property FusionPlugin* plugin;
 

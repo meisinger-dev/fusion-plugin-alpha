@@ -9,10 +9,13 @@
 
 @implementation ControllerCaptureOverlay {
     CaptureFocus* focusSquare;
+    NSDate* recordingDate;
     NSTimer* recordingTimer;
     UIAlertController* alertController;
     UITapGestureRecognizer* tapRecognizer;
+    UIView* grid;
     BOOL usingFocus;
+    BOOL showingGrid;
 }
 
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -45,6 +48,10 @@
     AudioServicesPlaySystemSound(1114);
   } else {
     [self.overlayImage setHidden:YES];
+    if (showingGrid) {
+      [grid removeFromSuperview];
+      showingGrid = NO;
+    }
 
     NSError* error;
     [self.manager captureStart:&error];
@@ -59,7 +66,8 @@
       return;
     }
 
-    recordingTimer = [NSTimer scheduledTimerWithTimeInterval:20.0f target:self selector:@selector(recordingTimerFired:) userInfo:nil repeats:NO];
+    recordingDate = [NSDate date];
+    recordingTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/30.0 target:self selector:@selector(recordingTimerFired:) userInfo:nil repeats:NO];
     AudioServicesPlaySystemSound(1113);
   }
   
@@ -70,6 +78,48 @@
 -(IBAction) focusTap:(UITapGestureRecognizer *)gesture {
   CGPoint point = [gesture locationOfTouch:0 inView:self.view];
   [self.manager focus:point];
+}
+
+-(IBAction) gridToggle:(id)sender forEvent:(UIEvent *)event {
+  CGRect mainBounds = [[UIScreen mainScreen] bounds];
+  CGSize mainSize = mainBounds.size;
+  CGRect upperLocation = [self.controlsViewTop frame];
+  CGRect lowerLocation = [self.controlsViewBottom frame];
+  
+  if (!grid) {
+    CGRect gridFrame = CGRectMake(0, upperLocation.size.height, mainSize.width, (lowerLocation.origin.y - upperLocation.size.height));
+    grid = [[UIView alloc] initWithFrame:gridFrame];
+    
+    CGSize gridSize = gridFrame.size;
+    float gridWidth = gridSize.width;
+    float gridHeight = gridSize.height;
+    
+    UIView* gridVert1 = [[UIView alloc] initWithFrame:CGRectMake((gridWidth * 0.25), 0, 2, gridHeight)];
+    UIView* gridVert2 = [[UIView alloc] initWithFrame:CGRectMake((gridWidth * 0.75), 0, 2, gridHeight)];
+    [gridVert1 setBackgroundColor:UIColorWithHexStringAndAlpha(@"#dfdfdf", 0.2)];
+    [gridVert2 setBackgroundColor:UIColorWithHexStringAndAlpha(@"#dfdfdf", 0.2)];
+    [grid addSubview:gridVert1];
+    [grid addSubview:gridVert2];
+    
+    UIView* gridHorz1 = [[UIView alloc] initWithFrame:CGRectMake(0, (gridHeight * 0.25), gridWidth, 2)];
+    UIView* gridHorz2 = [[UIView alloc] initWithFrame:CGRectMake(0, (gridHeight * 0.50), gridWidth, 2)];
+    UIView* gridHorz3 = [[UIView alloc] initWithFrame:CGRectMake(0, (gridHeight * 0.75), gridWidth, 2)];
+    [gridHorz1 setBackgroundColor:UIColorWithHexStringAndAlpha(@"#dfdfdf", 0.2)];
+    [gridHorz2 setBackgroundColor:UIColorWithHexStringAndAlpha(@"#dfdfdf", 0.2)];
+    [gridHorz3 setBackgroundColor:UIColorWithHexStringAndAlpha(@"#dfdfdf", 0.2)];
+    [grid addSubview:gridHorz1];
+    [grid addSubview:gridHorz2];
+    [grid addSubview:gridHorz3];
+    [self.view addSubview:grid];
+  }
+  
+  if (!showingGrid) {
+    [self.view addSubview:grid];
+    showingGrid = YES;
+  } else {
+    [grid removeFromSuperview];
+    showingGrid = NO;
+  }
 }
 
 -(void) retakeVideo:(UIViewController *)child forMovie:(NSURL*)movieUrl {
@@ -99,8 +149,6 @@
     [child removeFromParentViewController];
 
     [[self captureButton] setUserInteractionEnabled:YES];
-    [[self overlayImage] setHidden:NO];
-
     [[self.manager device] addObserver:self forKeyPath:@"adjustingFocus" options:NSKeyValueObservingOptionNew context:nil];
     usingFocus = YES;
 
@@ -112,17 +160,29 @@
 }
 
 -(void) recordingTimerFired:(NSTimer *)timer {
-  [[self captureButton] setUserInteractionEnabled:NO];
-  [self.manager captureStop];
+  NSDate* current = [NSDate date];
+  NSTimeInterval interval = [current timeIntervalSinceDate:recordingDate];
+  
+  NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+  [formatter setDateFormat:@"ss.SSS"];
+  [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
+  
+  NSDate* sinceEpoch = [NSDate dateWithTimeIntervalSince1970:interval];
+  [self.timerLabel setText:[formatter stringFromDate:sinceEpoch]];
+  
+  if (interval > 20.0) {
+    [[self captureButton] setUserInteractionEnabled:NO];
+    [self.manager captureStop];
 
-  if ([recordingTimer isValid])
-    [recordingTimer invalidate];
-  recordingTimer = nil;
+    if ([recordingTimer isValid])
+      [recordingTimer invalidate];
+    recordingTimer = nil;
 
-  AudioServicesPlaySystemSound(1114);
+    AudioServicesPlaySystemSound(1114);
 
-  [self.cancelButton setHidden:YES];
-  [self.captureButton setSelected:NO];
+    [self.cancelButton setHidden:YES];
+    [self.captureButton setSelected:NO];
+  }
 }
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
@@ -246,7 +306,7 @@
       containerHeight = containerSize.height * 1.0f;
     }
 
-    CGRect layer = CGRectMake(0, 0, screen.width, (screen.height - containerHeight));
+    CGRect layer = CGRectMake(0, 45, screen.width, (screen.height - containerHeight - 45));
     [[self.manager preview] setBounds:layer];
     [[self.manager preview] setPosition:CGPointMake(CGRectGetMidX(layer), CGRectGetMidY(layer))];
     
@@ -305,6 +365,17 @@
 
 -(UIViewController *) childViewControllerForStatusBarHidden {
   return nil;
+}
+
+static UIColor* UIColorWithHexStringAndAlpha(NSString* hex, float alpha) {
+  unsigned int rgb = 0;
+  [[NSScanner scannerWithString:
+    [[hex uppercaseString] stringByTrimmingCharactersInSet:
+     [[NSCharacterSet characterSetWithCharactersInString:@"0123456789ABCDEF"] invertedSet]]] scanHexInt:&rgb];
+  return [UIColor colorWithRed:((CGFloat)((rgb & 0xFF0000) >> 16)) / 255.0
+                         green:((CGFloat)((rgb & 0xFF00) >> 8)) / 255.0
+                          blue:((CGFloat)(rgb & 0xFF)) / 255.0
+                         alpha:alpha];
 }
 
 @end

@@ -62,6 +62,8 @@
 
 -(IBAction) retakeVideo:(id)sender forEvent:(UIEvent *)event {
   ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
+  [[parent overlayImage] setHidden:NO];
+  [[parent timerLabel] setText:@"00.000"];
   [parent retakeVideo:self forMovie:[self.plugin currentVideoUrl]];
 }
 
@@ -70,95 +72,7 @@
   [self ensureWaitIndicator];
   [self ensureWaitDescription:@"We are saving your video. This may take a moment based on your connection."];
 
-  NSString* boundary = @"FfD04x";
-  FusionExercise* exercise = [self.plugin exercise];
-
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
-    NSData* file = [NSData dataWithContentsOfURL:[self.plugin currentVideoUrl]];
-    NSData* payload = [self generateFileUploadData:boundary data:file parameters:@{
-      @"filename": [NSString stringWithFormat:@"%@-video.mp4", [exercise filePrefix]],
-      @"testId": [exercise testId],
-      @"testTypeId": [exercise testTypeId],
-      @"uniqueId": [exercise uniqueId],
-      @"version": [exercise version],
-      @"viewId": [exercise viewId],
-      @"exerciseId": [exercise exerciseId],
-      @"bodySideId": [exercise bodySideId],
-      @"exerciseName": [exercise name]
-    }];
-
-    NSString* payloadLength = [NSString stringWithFormat:@"%lu", (unsigned long)[payload length]];
-    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:[self.plugin uploadEndpointUrl] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:300];
-    [request setHTTPMethod:@"POST"];
-    if ([self.plugin apiVersion])
-      [request setValue:[self.plugin apiVersion] forHTTPHeaderField:@"X-Api-Version"];
-    if ([self.plugin apiAuthorize])
-      [request setValue:[self.plugin apiAuthorize] forHTTPHeaderField:@"Authorization"];
-    [request setValue:payloadLength forHTTPHeaderField:@"Content-Length"];
-    [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary] forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPBody:payload];
-    
-    NSURLSessionConfiguration* configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
-    NSURLSession* session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:NSOperationQueue.mainQueue];
-    
-    NSURLSessionTask* task = [session dataTaskWithRequest:request completionHandler:^(NSData* data, NSURLResponse* response, NSError* error) {
-      if (error.code != noErr) {
-        if (error.code == NSURLErrorTimedOut) {
-          alertController = [UIAlertController alertControllerWithTitle:@"Video Upload Timeout" message:@"Video is taking too long to upload. This may be due to a slow or low bandwidth connection. Check your connection and try again later." preferredStyle:UIAlertControllerStyleAlert];
-          [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
-            [self.plugin failed:@"Video upload timed out"];
-          }]];
-
-          [self presentViewController:alertController animated:YES completion:nil];
-        } else {
-          alertController = [UIAlertController alertControllerWithTitle:@"Video Upload Failed" message:@"Unable to make request at this time. Please check your connection and try again later." preferredStyle:UIAlertControllerStyleAlert];
-          [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
-            [self.plugin failed:@"Video upload request failed"];
-          }]];
-
-          [self presentViewController:alertController animated:YES completion:nil];
-        }
-        return;
-      }
-
-      NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-      NSInteger statusCode = [httpResponse statusCode];
-      if (statusCode >= 200 && statusCode < 300) {
-        NSError* jsonError = nil;
-        NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
-        if (jsonError.code != noErr) {
-          alertController = [UIAlertController alertControllerWithTitle:@"Video Upload was Rejected" message:@"An invalid response was received while the video was being uploaded. Please try again later." preferredStyle:UIAlertControllerStyleAlert];
-          [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
-            [self.plugin failed:@"Video upload invalid response"];
-          }]];
-
-          [self presentViewController:alertController animated:YES completion:nil];
-        }
-
-        id haveAllVideos = json[@"HaveAllVideos"];
-        hasExercisesRemaining = haveAllVideos ? ![haveAllVideos boolValue] : NO;
-
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-          if (waitIndicator && waitIndicator.isAnimating) {
-            [waitIndicator setProgress:1.0];
-            [waitLabel setText:@"100%"];
-            loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(uploadingFinishFired:) userInfo:nil repeats:NO];
-          } else
-            [self uploadingFinishFired:nil];
-        });
-
-        return;
-      }
-
-      alertController = [UIAlertController alertControllerWithTitle:@"Video Upload was Rejected" message:@"Videos are not being accepted at this time. Please try again later." preferredStyle:UIAlertControllerStyleAlert];
-      [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
-        [self.plugin failed:@"Video upload rejected"];
-      }]];
-
-      [self presentViewController:alertController animated:YES completion:nil];
-    }];
-    [task resume];
-  });
+  [self uploadVideo];
 }
 
 -(IBAction) takePicture:(id)sender forEvent:(UIEvent *)event {
@@ -263,6 +177,88 @@
     [self.saveButton setHidden:NO];
   
   [self.playbackButton setSelected:NO];
+}
+
+-(void) uploadVideo {
+  NSString* boundary = @"FfD04x";
+  FusionExercise* exercise = [self.plugin exercise];
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
+    NSData* file = [NSData dataWithContentsOfURL:[self.plugin currentVideoUrl]];
+    NSData* payload = [self generateFileUploadData:boundary data:file parameters:@{
+      @"filename": [NSString stringWithFormat:@"%@-video.mp4", [exercise filePrefix]],
+      @"testId": [exercise testId],
+      @"testTypeId": [exercise testTypeId],
+      @"uniqueId": [exercise uniqueId],
+      @"version": [exercise version],
+      @"viewId": [exercise viewId],
+      @"exerciseId": [exercise exerciseId],
+      @"bodySideId": [exercise bodySideId],
+      @"exerciseName": [exercise name]
+    }];
+    
+    NSString* payloadLength = [NSString stringWithFormat:@"%lu", (unsigned long)[payload length]];
+    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:[self.plugin uploadEndpointUrl] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:300];
+    [request setHTTPMethod:@"POST"];
+    if ([self.plugin apiVersion])
+    [request setValue:[self.plugin apiVersion] forHTTPHeaderField:@"X-Api-Version"];
+    if ([self.plugin apiAuthorize])
+    [request setValue:[self.plugin apiAuthorize] forHTTPHeaderField:@"Authorization"];
+    [request setValue:payloadLength forHTTPHeaderField:@"Content-Length"];
+    [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary] forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:payload];
+    
+    NSURLSessionConfiguration* configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:NSOperationQueue.mainQueue];
+    
+    NSURLSessionTask* task = [session dataTaskWithRequest:request completionHandler:^(NSData* data, NSURLResponse* response, NSError* error) {
+      if (error.code != noErr) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+          if (waitIndicator && waitIndicator.isAnimating)
+            loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(uploadingFailedFired:) userInfo:nil repeats:NO];
+          else
+            [self uploadingFailedFired:nil];
+        });
+        return;
+      }
+      
+      NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+      NSInteger statusCode = [httpResponse statusCode];
+      if (statusCode >= 200 && statusCode < 300) {
+        NSError* jsonError = nil;
+        NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
+        if (jsonError.code != noErr) {
+          dispatch_async(dispatch_get_main_queue(), ^(void) {
+            if (waitIndicator && waitIndicator.isAnimating)
+              loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(uploadingFailedFired:) userInfo:nil repeats:NO];
+            else
+              [self uploadingFailedFired:nil];
+          });
+        }
+        
+        id haveAllVideos = json[@"HaveAllVideos"];
+        hasExercisesRemaining = haveAllVideos ? ![haveAllVideos boolValue] : NO;
+        
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+          if (waitIndicator && waitIndicator.isAnimating) {
+            [waitIndicator setProgress:1.0];
+            [waitLabel setText:@"100%"];
+            loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(uploadingFinishFired:) userInfo:nil repeats:NO];
+          } else
+            [self uploadingFinishFired:nil];
+        });
+        return;
+      }
+      
+      dispatch_async(dispatch_get_main_queue(), ^(void) {
+        if (waitIndicator && waitIndicator.isAnimating)
+          loadingTimer = [NSTimer scheduledTimerWithTimeInterval:1.15 target:self selector:@selector(uploadingFailedFired:) userInfo:nil repeats:NO];
+        else
+          [self uploadingFailedFired:nil];
+      });
+    }];
+    [task resume];
+  });
 }
 
 -(void) retakePicture:(UIViewController *)child {
@@ -391,6 +387,7 @@
   AVPlayer* player = [self.moviePlayer player];
   AVPlayerItem* playerItem = [player currentItem];
   CMTime duration = [playerItem.asset duration];
+  CMTime currentTime = [player currentTime];
   
   if (CMTIME_IS_INVALID(duration)) {
     self.slider.minimumValue = 0.0;
@@ -398,7 +395,13 @@
   }
   
   double seconds = CMTimeGetSeconds(duration);
-  double currentSeconds = CMTimeGetSeconds([player currentTime]);
+  double currentSeconds = CMTimeGetSeconds(currentTime);
+
+  NSDate* currentDate = [[NSDate alloc] initWithTimeIntervalSince1970:currentSeconds];
+  NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+  [formatter setDateFormat:@"ss.SSS"];
+  [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
+  [self.timerLabel setText:[formatter stringFromDate:currentDate]];
   
   float minValue = [self.slider minimumValue];
   float maxValue = [self.slider maximumValue];
@@ -481,12 +484,12 @@
   [waitCover addSubview:waitDescription];
 }
 
--(void) ensureDecisionModal {
+-(void) ensureSuccessModal {
   CGRect mainBounds = [[UIScreen mainScreen] bounds];
   CGSize mainSize = mainBounds.size;
-  CGRect modalBounds = CGRectMake(0, 0, mainSize.width - 50, 275);
+  CGRect modalBounds = CGRectMake(0, 0, mainSize.width - 50, 225);
   if (modalBounds.size.width > 350)
-    modalBounds = CGRectMake(0, 0, 350, 275);
+    modalBounds = CGRectMake(0, 0, 350, 225);
 
   CGSize modalSize = modalBounds.size;
   float modalWidth = modalSize.width;
@@ -503,11 +506,69 @@
     UIViewAutoresizingFlexibleBottomMargin)];
   [[decisionModal layer] setCornerRadius:12];
 
-  UILabel* savedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, modalWidth, 50)];
+  UIImage* image = [UIImage imageNamed:@"FusionPlugin.bundle/check-mark.png"];
+  UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+  imageView.frame = CGRectMake(0, 25, 40, 40);
+
+  CGPoint imageViewCenter = imageView.center;
+  imageViewCenter.x = (mainSize.width / 2) - 30;
+  [imageView setCenter:imageViewCenter];
+
+  UILabel* savedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 75, modalWidth, 50)];
   [savedLabel setText:@"Video Saved"];
-  [savedLabel setTextColor:UIColorWithHexString(@"#41baec")];
   [savedLabel setTextAlignment:NSTextAlignmentCenter];
   [savedLabel setFont:[UIFont preferredFontForTextStyle:UIFontTextStyleTitle1]];
+  
+  UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [nextButton addTarget:self action:@selector(continueToNextExercise) forControlEvents:UIControlEventTouchUpInside];
+  [nextButton setFrame:CGRectMake(15, modalHeight - 80, modalWidth - 30, 60)];
+  [nextButton setBackgroundColor:UIColorWithHexString(@"#41baec")];
+  [nextButton setTitle:@"NEXT" forState:UIControlStateNormal];
+  [nextButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+  [[nextButton titleLabel] setFont:[UIFont boldSystemFontOfSize:([nextButton titleLabel].font.pointSize - 1)]];
+  [[nextButton layer] setCornerRadius:8];
+
+  [self ensureWaitCover];
+  [waitCover addSubview:decisionModal];
+  [decisionModal addSubview:imageView];
+  [decisionModal addSubview:savedLabel];
+  [decisionModal addSubview:nextButton];
+}
+
+-(void) ensureDecisionModal {
+  CGRect mainBounds = [[UIScreen mainScreen] bounds];
+  CGSize mainSize = mainBounds.size;
+  CGRect modalBounds = CGRectMake(0, 0, mainSize.width - 50, 325);
+  if (modalBounds.size.width > 350)
+    modalBounds = CGRectMake(0, 0, 350, 325);
+
+  CGSize modalSize = modalBounds.size;
+  float modalWidth = modalSize.width;
+  float modalHeight = modalSize.height;
+
+  decisionModal = [[UIView alloc] initWithFrame:modalBounds];
+  [decisionModal setCenter:CGPointMake(mainSize.width / 2, mainSize.height / 2)];
+  [decisionModal setBackgroundColor:UIColor.whiteColor];
+  [decisionModal setAutoresizingMask:(
+    UIViewAutoresizingFlexibleWidth |
+    UIViewAutoresizingFlexibleLeftMargin |
+    UIViewAutoresizingFlexibleRightMargin |
+    UIViewAutoresizingFlexibleTopMargin |
+    UIViewAutoresizingFlexibleBottomMargin)];
+  [[decisionModal layer] setCornerRadius:12];
+
+  UIImage* image = [UIImage imageNamed:@"FusionPlugin.bundle/cross-mark.png"];
+  UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+  imageView.frame = CGRectMake(0, 25, 40, 40);
+
+  CGPoint imageViewCenter = imageView.center;
+  imageViewCenter.x = (mainSize.width / 2) - 30;
+  [imageView setCenter:imageViewCenter];
+
+  UILabel* errorLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 75, modalWidth, 50)];
+  [errorLabel setText:@"Saving Error"];
+  [errorLabel setTextAlignment:NSTextAlignmentCenter];
+  [errorLabel setFont:[UIFont preferredFontForTextStyle:UIFontTextStyleTitle1]];
   
   UILabel* orLabel = [[UILabel alloc] initWithFrame:CGRectMake((modalWidth/2 - 20), modalHeight - 120, 40, 40)];
   [orLabel setText:@"OR"];
@@ -519,36 +580,37 @@
   UIView* orLine = [[UIView alloc] initWithFrame:CGRectMake(15, modalHeight - 100, modalWidth - 30, 2)];
   [orLine setBackgroundColor:UIColorWithHexString(@"#dfdfdf")];
   
-  UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [nextButton addTarget:self action:@selector(continueToNextExercise) forControlEvents:UIControlEventTouchUpInside];
-  [nextButton setFrame:CGRectMake(15, modalHeight - 180, modalWidth - 30, 60)];
-  [nextButton setBackgroundColor:UIColorWithHexString(@"#00b96d")];
-  [nextButton setTitle:(hasExercisesRemaining ? @"RECORD ANOTHER EXERCISE" : @"BACK TO TESTS") forState:UIControlStateNormal];
-  [nextButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-  [[nextButton titleLabel] setFont:[UIFont boldSystemFontOfSize:([nextButton titleLabel].font.pointSize - 1)]];
-  [[nextButton layer] setCornerRadius:8];
+  UIButton* recordButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [recordButton addTarget:self action:@selector(continueToRecordNew) forControlEvents:UIControlEventTouchUpInside];
+  [recordButton setFrame:CGRectMake(15, modalHeight - 180, modalWidth - 30, 60)];
+  [recordButton setBackgroundColor:UIColorWithHexString(@"#00b96d")];
+  [recordButton setTitle:@"RECORD NEW VIDEO" forState:UIControlStateNormal];
+  [recordButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+  [[recordButton titleLabel] setFont:[UIFont boldSystemFontOfSize:([recordButton titleLabel].font.pointSize - 1)]];
+  [[recordButton layer] setCornerRadius:8];
   
-  UIButton* markButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [markButton addTarget:self action:@selector(continueToMarkExercise) forControlEvents:UIControlEventTouchUpInside];
-  [markButton setFrame:CGRectMake(15, modalHeight - 80, modalWidth - 30, 60)];
-  [markButton setBackgroundColor:UIColorWithHexString(@"#41baec")];
-  [markButton setTitle:@"CAPTURE AND PLACE MARKERS" forState:UIControlStateNormal];
-  [markButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-  [[markButton titleLabel] setFont:[UIFont boldSystemFontOfSize:([markButton titleLabel].font.pointSize - 1)]];
-  [[markButton layer] setCornerRadius:8];
+  UIButton* againButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [againButton addTarget:self action:@selector(continueToTryAgain) forControlEvents:UIControlEventTouchUpInside];
+  [againButton setFrame:CGRectMake(15, modalHeight - 80, modalWidth - 30, 60)];
+  [againButton setBackgroundColor:UIColorWithHexString(@"#41baec")];
+  [againButton setTitle:@"TRY SAVING AGAIN" forState:UIControlStateNormal];
+  [againButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+  [[againButton titleLabel] setFont:[UIFont boldSystemFontOfSize:([againButton titleLabel].font.pointSize - 1)]];
+  [[againButton layer] setCornerRadius:8];
 
   [self ensureWaitCover];
   [waitCover addSubview:decisionModal];
-  [decisionModal addSubview:savedLabel];
-  [decisionModal addSubview:nextButton];
-  [decisionModal addSubview:markButton];
+  [decisionModal addSubview:imageView];
+  [decisionModal addSubview:errorLabel];
+  [decisionModal addSubview:recordButton];
+  [decisionModal addSubview:againButton];
   [decisionModal addSubview:orLine];
   [decisionModal addSubview:orLabel];
 }
 
 -(void) unloadWaiting {
   [self unloadWaitIndicator];
-  [self unloadDecisionModal];
+  [self unloadModal];
   [self unloadWaitCover];
 }
 
@@ -584,7 +646,7 @@
   waitDescription = nil;
 }
 
--(void) unloadDecisionModal {
+-(void) unloadModal {
   if (!decisionModal)
     return;
 
@@ -613,8 +675,25 @@
   return payload;
 }
 
+-(void) continueToTryAgain {
+  [self unloadModal];
+  [self unloadWaitCover];
+  
+  [self uploadVideo];
+}
+
+-(void) continueToRecordNew {
+  [self unloadModal];
+  [self unloadWaitCover];
+  
+  ControllerCaptureOverlay* parent = (ControllerCaptureOverlay*)self.parentViewController;
+  [[parent overlayImage] setHidden:NO];
+  [[parent timerLabel] setText:@"00.000"];
+  [parent retakeVideo:self forMovie:[self.plugin currentVideoUrl]];
+}
+
 -(void) continueToNextExercise {
-  [self unloadDecisionModal];
+  [self unloadModal];
   [self unloadWaitCover];
   
   FusionResult* result = [[FusionResult alloc] init];
@@ -625,7 +704,7 @@
 }
 
 -(void) continueToMarkExercise {
-  [self unloadDecisionModal];
+  [self unloadModal];
   [self unloadWaitCover];
 
   [self.saveInfoView setHidden:YES];
@@ -675,6 +754,25 @@
   }
 }
 
+-(void) uploadingFailedFired:(NSTimer *)timer {
+  dispatch_async(dispatch_get_main_queue(), ^(void) {
+    if ([loadingTimer isValid])
+      [loadingTimer invalidate];
+    loadingTimer = nil;
+    
+    [[self.plugin exercise] setVideoUrl:NULL];
+    [self.captureInfoView setHidden:YES];
+    [self.saveInfoView setHidden:YES];
+    [self.saveButton setHidden:YES];
+    [self.takeButton setHidden:YES];
+    [self.retakeButton setHidden:YES];
+    
+    [self unloadWaitDescription];
+    [self unloadWaitIndicator];
+    [self ensureDecisionModal];
+  });
+}
+
 -(void) uploadingFinishFired:(NSTimer *)timer {
   dispatch_async(dispatch_get_main_queue(), ^(void) {
     if ([loadingTimer isValid])
@@ -690,7 +788,7 @@
     
     [self unloadWaitDescription];
     [self unloadWaitIndicator];
-    [self ensureDecisionModal];
+    [self ensureSuccessModal];
   });
 }
 
@@ -715,9 +813,10 @@
   [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
   
   self.moviePlayer = [[AVPlayerViewController alloc] init];
-  self.moviePlayer.allowsPictureInPicturePlayback = NO;
-  self.moviePlayer.showsPlaybackControls = NO;
-  self.moviePlayer.player = player;
+  [self.moviePlayer setAllowsPictureInPicturePlayback:NO];
+  [self.moviePlayer setShowsPlaybackControls:NO];
+  [self.moviePlayer setPlayer:player];
+  [self.moviePlayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
   [self.slider setMinimumValue:0.0];
   [self.slider setValue:0.0];
   initializedSeekbar = NO;
