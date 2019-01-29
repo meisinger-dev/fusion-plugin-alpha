@@ -13,8 +13,10 @@
   UIView* waitDescription;
   UIView* decisionModal;
   NSTimer* loadingTimer;
+  NSTimer* fakeUploadTimer;
   BOOL initializedSeekbar;
   BOOL hasExercisesRemaining;
+  int fakeLoopCount;
 }
 
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -182,6 +184,11 @@
 -(void) uploadVideo {
   NSString* boundary = @"FfD04x";
   FusionExercise* exercise = [self.plugin exercise];
+
+  if (![self.plugin uploadEndpointUrl]) {
+    [self uploadFakeVideo];
+    return;
+  }
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
     NSData* file = [NSData dataWithContentsOfURL:[self.plugin currentVideoUrl]];
@@ -258,6 +265,50 @@
       });
     }];
     [task resume];
+  });
+}
+
+-(void) uploadFakeVideo {
+  fakeLoopCount = 0;
+
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
+    fakeUploadTimer = [NSTimer scheduledTimerWithTimeInterval:0.8 repeats:YES block:^(NSTimer* timer) {
+      fakeLoopCount++;
+      if (waitIndicator && waitLabel) {
+        float percentage = ((float)(fakeLoopCount*9.731)/(float)100);
+        if (percentage > 0.98)
+          percentage = 0.99;
+
+        [waitIndicator setProgress:percentage];
+        [waitLabel setText:[NSString stringWithFormat:@"%d%%", (int)(percentage * 100)]];
+        
+        if (!waitIndicator.isAnimating)
+          [waitIndicator startAnimating];
+
+        if (percentage == 0.99) {
+          if ([fakeUploadTimer isValid])
+            [fakeUploadTimer invalidate];
+          fakeUploadTimer = nil;
+        }
+      }
+    }];
+
+    loadingTimer = [NSTimer scheduledTimerWithTimeInterval:11.15 repeats:NO, block:^(NSTimer* timer) {
+      if ([loadingTimer isValid])
+        [loadingTimer invalidate];
+      loadingTimer = nil;
+      
+      [[self.plugin exercise] setVideoUrl:[self.plugin currentVideoUrl]];
+      [self.captureInfoView setHidden:YES];
+      [self.saveInfoView setHidden:YES];
+      [self.saveButton setHidden:YES];
+      [self.takeButton setHidden:YES];
+      [self.retakeButton setHidden:YES];
+      
+      [self unloadWaitDescription];
+      [self unloadWaitIndicator];
+      [self ensureSuccessModal];
+    }];
   });
 }
 
