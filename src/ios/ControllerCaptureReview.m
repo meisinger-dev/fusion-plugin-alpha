@@ -293,7 +293,7 @@
       }
     }];
 
-    loadingTimer = [NSTimer scheduledTimerWithTimeInterval:11.15 repeats:NO, block:^(NSTimer* timer) {
+    loadingTimer = [NSTimer scheduledTimerWithTimeInterval:11.15 repeats:NO block:^(NSTimer* timer) {
       if ([loadingTimer isValid])
         [loadingTimer invalidate];
       loadingTimer = nil;
