@@ -271,11 +271,11 @@
 -(void) uploadFakeVideo {
   fakeLoopCount = 0;
 
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void) {
+  dispatch_async(dispatch_get_main_queue(), ^(void) {
     fakeUploadTimer = [NSTimer scheduledTimerWithTimeInterval:0.8 repeats:YES block:^(NSTimer* timer) {
       fakeLoopCount++;
       if (waitIndicator && waitLabel) {
-        float percentage = ((float)(fakeLoopCount*9.731)/(float)100);
+        float percentage = ((float)(fakeLoopCount*9.891)/(float)100);
         if (percentage > 0.98)
           percentage = 0.99;
 
