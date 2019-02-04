@@ -275,8 +275,9 @@
     fakeUploadTimer = [NSTimer scheduledTimerWithTimeInterval:0.8 repeats:YES block:^(NSTimer* timer) {
       fakeLoopCount++;
       if (waitIndicator && waitLabel) {
-        float percentage = ((float)(fakeLoopCount*9.891)/(float)100);
-        if (percentage > 0.98)
+        int random = [self getRandomNumber:(fakeLoopCount * 10) to:((fakeLoopCount + 1) * 10)];
+        float percentage = ((float)random/(float)100);
+        if ((fakeLoopCount * 10) >= 100 || random >= 98)
           percentage = 0.99;
 
         [waitIndicator setProgress:percentage];
@@ -948,6 +949,10 @@
 
 -(UIViewController *) childViewControllerForStatusBarHidden {
   return nil;
+}
+
+-(int) getRandomNumber:(int)from to:(int)to {
+  return (int)from + arc4random() % (to-from+1);
 }
 
 static UIColor* UIColorWithHexString(NSString* hex) {
