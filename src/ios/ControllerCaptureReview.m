@@ -272,7 +272,7 @@
   fakeLoopCount = 0;
 
   dispatch_async(dispatch_get_main_queue(), ^(void) {
-    fakeUploadTimer = [NSTimer scheduledTimerWithTimeInterval:0.8 repeats:YES block:^(NSTimer* timer) {
+    fakeUploadTimer = [NSTimer scheduledTimerWithTimeInterval:0.4 repeats:YES block:^(NSTimer* timer) {
       fakeLoopCount++;
       if (waitIndicator && waitLabel) {
         int random = [self getRandomNumber:(fakeLoopCount * 10) to:((fakeLoopCount + 1) * 10)];
@@ -294,7 +294,7 @@
       }
     }];
 
-    loadingTimer = [NSTimer scheduledTimerWithTimeInterval:11.15 repeats:NO block:^(NSTimer* timer) {
+    loadingTimer = [NSTimer scheduledTimerWithTimeInterval:5.15 repeats:NO block:^(NSTimer* timer) {
       if ([loadingTimer isValid])
         [loadingTimer invalidate];
       loadingTimer = nil;
