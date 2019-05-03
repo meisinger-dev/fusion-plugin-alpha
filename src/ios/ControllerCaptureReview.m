@@ -539,9 +539,11 @@
 -(void) ensureSuccessModal {
   CGRect mainBounds = [[UIScreen mainScreen] bounds];
   CGSize mainSize = mainBounds.size;
-  CGRect modalBounds = CGRectMake(0, 0, mainSize.width - 50, 225);
+  float boundsHeight = (self.markersEnabled) ? 325.0 : 225.0;
+
+  CGRect modalBounds = CGRectMake(0, 0, mainSize.width - 50, boundsHeight);
   if (modalBounds.size.width > 350)
-    modalBounds = CGRectMake(0, 0, 350, 225);
+    modalBounds = CGRectMake(0, 0, 350, boundsHeight);
 
   CGSize modalSize = modalBounds.size;
   float modalWidth = modalSize.width;
@@ -570,6 +572,16 @@
   [savedLabel setText:@"Video Saved"];
   [savedLabel setTextAlignment:NSTextAlignmentCenter];
   [savedLabel setFont:[UIFont preferredFontForTextStyle:UIFontTextStyleTitle1]];
+
+  UILabel* orLabel = [[UILabel alloc] initWithFrame:CGRectMake((modalWidth/2 - 20), modalHeight - 120, 40, 40)];
+  [orLabel setText:@"OR"];
+  [orLabel setTextColor:UIColorWithHexString(@"#dfdfdf")];
+  [orLabel setFont:[UIFont systemFontOfSize:(orLabel.font.pointSize - 2)]];
+  [orLabel setTextAlignment:NSTextAlignmentCenter];
+  [orLabel setBackgroundColor:UIColor.whiteColor];
+  
+  UIView* orLine = [[UIView alloc] initWithFrame:CGRectMake(15, modalHeight - 100, modalWidth - 30, 2)];
+  [orLine setBackgroundColor:UIColorWithHexString(@"#dfdfdf")];
   
   UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeSystem];
   [nextButton addTarget:self action:@selector(continueToNextExercise) forControlEvents:UIControlEventTouchUpInside];
@@ -580,11 +592,30 @@
   [[nextButton titleLabel] setFont:[UIFont boldSystemFontOfSize:([nextButton titleLabel].font.pointSize - 1)]];
   [[nextButton layer] setCornerRadius:8];
 
+  UIButton* markButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [markButton addTarget:self action:@selector(continueToMarkExercise) forControlEvents:UIControlEventTouchUpInside];
+  [markButton setFrame:CGRectMake(15, modalHeight - 80, modalWidth - 30, 60)];
+  [markButton setBackgroundColor:UIColorWithHexString(@"#41baec")];
+  [markButton setTitle:@"CAPTURE AND PLACE MARKERS" forState:UIControlStateNormal];
+  [markButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+  [[markButton titleLabel] setFont:[UIFont boldSystemFontOfSize:([markButton titleLabel].font.pointSize - 1)]];
+  [[markButton layer] setCornerRadius:8];
+
   [self ensureWaitCover];
   [waitCover addSubview:decisionModal];
   [decisionModal addSubview:imageView];
   [decisionModal addSubview:savedLabel];
   [decisionModal addSubview:nextButton];
+
+  if (self.markersEnabled) {
+    [nextButton setFrame:CGRectMake(15, modalHeight - 180, modalWidth - 30, 60)];
+    [nextButton setBackgroundColor:UIColorWithHexString(@"00b96d")];
+    [nextButton setTitle:(hasExercisesRemaining ? @"RECORD ANOTHER EXERCISE" : @"BACK TO TESTS") forState:UIControlStateNormal];
+
+    [decisionModal addSubview:markButton];
+    [decisionModal addSubview:orLine];
+    [decisionModal addSubview:orLabel];
+  }
 }
 
 -(void) ensureDecisionModal {

@@ -13,6 +13,7 @@
 @property (weak, nonatomic) IBOutlet UILabel* timerLabel;
 @property CaptureManager* manager;
 @property FusionPlugin* plugin;
+@property BOOL markersEnabled;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) captureToggle:(id)sender forEvent:(UIEvent*)event;

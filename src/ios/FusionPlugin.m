@@ -13,6 +13,7 @@
 
   ControllerCaptureOverlay* controller = [[ControllerCaptureOverlay alloc] initWithNibName:@"ControllerCaptureOverlay" bundle:nil];
   [controller setPlugin:self];
+  [controller setMarkersEnabled:self.markersEnabled];
 
   [self setCommand:command];
   [self.viewController presentViewController:controller animated:YES completion:nil];
@@ -24,6 +25,7 @@
 
   ControllerCaptureReview* controller = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerCaptureReview" bundle:nil];
   [controller setPlugin:self];
+  [controller setMarkersEnabled:YES];
   
   [self setCommand:command];
   [self.viewController presentViewController:controller animated:YES completion:nil];
@@ -89,6 +91,9 @@
   id jsonData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
   if (jsonData == nil)
     return;
+
+  id enableMarkersFlag = jsonData[@"enableMarkers"];
+  [self setMarkersEnabled:(enableMarkersFlag != nil)];
 
   id endpointUrl = jsonData[@"endpointUrl"];
   [self setUploadEndpointUrl:(endpointUrl != nil) ? [[NSURL alloc] initWithString:endpointUrl] : nil];

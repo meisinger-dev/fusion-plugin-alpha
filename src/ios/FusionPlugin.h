@@ -15,6 +15,7 @@
 @property NSURL* uploadEndpointUrl;
 @property NSString* apiAuthorize;
 @property NSString* apiVersion;
+@property BOOL markersEnabled;
 
 -(void) takeVideo:(CDVInvokedUrlCommand*)command;
 -(void) playVideo:(CDVInvokedUrlCommand*)command;

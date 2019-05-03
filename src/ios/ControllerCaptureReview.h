@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UILabel* timerLabel;
 @property AVPlayerViewController* moviePlayer;
 @property FusionPlugin* plugin;
+@property BOOL markersEnabled;
 
 -(IBAction) cancel:(id)sender forEvent:(UIEvent*)event;
 -(IBAction) takePicture:(id)sender forEvent:(UIEvent*)event;

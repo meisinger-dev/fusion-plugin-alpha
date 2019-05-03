@@ -235,6 +235,7 @@
 
   ControllerCaptureReview* player = [[ControllerCaptureReview alloc] initWithNibName:@"ControllerCaptureReview" bundle:nil];
   [player setPlugin:self.plugin];
+  [player setMarkersEnabled:self.markersEnabled];
   
   [[self.manager device] removeObserver:self forKeyPath:@"adjustingFocus"];
   [self.view removeGestureRecognizer:tapRecognizer];
