@@ -186,7 +186,6 @@
   FusionExercise* exercise = [self.plugin exercise];
 
   if (![self.plugin uploadEndpointUrl]) {
-    [self uploadFakeVideo];
     return;
   }
   
@@ -208,9 +207,9 @@
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:[self.plugin uploadEndpointUrl] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:300];
     [request setHTTPMethod:@"POST"];
     if ([self.plugin apiVersion])
-    [request setValue:[self.plugin apiVersion] forHTTPHeaderField:@"X-Api-Version"];
+      [request setValue:[self.plugin apiVersion] forHTTPHeaderField:@"X-Api-Version"];
     if ([self.plugin apiAuthorize])
-    [request setValue:[self.plugin apiAuthorize] forHTTPHeaderField:@"Authorization"];
+      [request setValue:[self.plugin apiAuthorize] forHTTPHeaderField:@"Authorization"];
     [request setValue:payloadLength forHTTPHeaderField:@"Content-Length"];
     [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary] forHTTPHeaderField:@"Content-Type"];
     [request setHTTPBody:payload];
@@ -265,51 +264,6 @@
       });
     }];
     [task resume];
-  });
-}
-
--(void) uploadFakeVideo {
-  fakeLoopCount = 0;
-
-  dispatch_async(dispatch_get_main_queue(), ^(void) {
-    fakeUploadTimer = [NSTimer scheduledTimerWithTimeInterval:0.4 repeats:YES block:^(NSTimer* timer) {
-      fakeLoopCount++;
-      if (waitIndicator && waitLabel) {
-        int random = [self getRandomNumber:(fakeLoopCount * 10) to:((fakeLoopCount + 1) * 10)];
-        float percentage = ((float)random/(float)100);
-        if ((fakeLoopCount * 10) >= 100 || random >= 98)
-          percentage = 0.99;
-
-        [waitIndicator setProgress:percentage];
-        [waitLabel setText:[NSString stringWithFormat:@"%d%%", (int)(percentage * 100)]];
-        
-        if (!waitIndicator.isAnimating)
-          [waitIndicator startAnimating];
-
-        if (percentage == 0.99) {
-          if ([fakeUploadTimer isValid])
-            [fakeUploadTimer invalidate];
-          fakeUploadTimer = nil;
-        }
-      }
-    }];
-
-    loadingTimer = [NSTimer scheduledTimerWithTimeInterval:5.15 repeats:NO block:^(NSTimer* timer) {
-      if ([loadingTimer isValid])
-        [loadingTimer invalidate];
-      loadingTimer = nil;
-      
-      [[self.plugin exercise] setVideoUrl:[self.plugin currentVideoUrl]];
-      [self.captureInfoView setHidden:YES];
-      [self.saveInfoView setHidden:YES];
-      [self.saveButton setHidden:YES];
-      [self.takeButton setHidden:YES];
-      [self.retakeButton setHidden:YES];
-      
-      [self unloadWaitDescription];
-      [self unloadWaitIndicator];
-      [self ensureSuccessModal];
-    }];
   });
 }
 
@@ -381,8 +335,15 @@
   }
 
   if (object == playerItem && [keyPath isEqualToString:@"loadedTimeRanges"] && !initializedSeekbar) {
-    if (playerItem.status == AVPlayerItemStatusFailed)
+    if (playerItem.status == AVPlayerItemStatusFailed) {
+      alertController = [UIAlertController alertControllerWithTitle:@"Unable to Retrieve Video" message:@"The selected video has failed to load. Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+      [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action) {
+        [self.plugin failed:@"Unable to retrieve video"];
+      }]];
+      
+      [self presentViewController:alertController animated:YES completion:nil];
       return;
+    }
     
     NSArray* ranges = (NSArray *)[change objectForKey:NSKeyValueChangeNewKey];
     if (ranges && [ranges count]) {
@@ -761,6 +722,10 @@
 -(void) continueToTryAgain {
   [self unloadModal];
   [self unloadWaitCover];
+
+  [self ensureWaitCover];
+  [self ensureWaitIndicator];
+  [self ensureWaitDescription:@"We are saving your video. This may take a moment based on your connection."];
   
   [self uploadVideo];
 }
